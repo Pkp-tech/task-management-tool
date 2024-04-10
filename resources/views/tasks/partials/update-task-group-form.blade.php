@@ -1,48 +1,53 @@
-<section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Update Password') }}
-        </h2>
+<section class="space-y-6">
+    <x-secondary-button
+        x-data=""
+        x-on:click.prevent="$dispatch('open-modal', 'update-task-group-{{$taskGroup->id}}')"
+    >{{ __('Update') }}</x-secondary-button>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
-        </p>
-    </header>
+    <x-modal name="update-task-group-{{$taskGroup->id}}" :show="$errors->taskGroupValidation->isNotEmpty()" focusable>
+        <form method="post" action="{{ route('task-group.update', ['id' => $taskGroup->id]) }}" class="p-6">
+            @csrf
+            @method('patch')
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
-        @csrf
-        @method('put')
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('') }}
+            </h2>
 
-        <div>
-            <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
-        </div>
+            <!-- <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                {{ __('Once this task group is deleted, all of its resources and data will be permanently deleted.') }}
+            </p> -->
 
-        <div>
-            <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
-        </div>
+            <div class="mt-6">
+                <x-input-label for="task-group-name" value="{{ __('task-group-name') }}" class="sr-only" />
 
-        <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
-        </div>
+                <x-text-input
+                    id="task-group-name"
+                    name="task-group-name"
+                    type="text"
+                    class="mt-1 block w-3/4"
+                    value="{{$taskGroup->name}}"
+                />
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+                <x-text-input
+                    id="task-group-id"
+                    name="task-group-id"
+                    type="text"
+                    hidden
+                    value="{{$taskGroup->id}}"
+                />
 
-            @if (session('status') === 'password-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Saved.') }}</p>
-            @endif
-        </div>
-    </form>
+                <x-input-error :messages="$errors->taskGroupValidation->get('task-group-name')" class="mt-2" />
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <x-secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-secondary-button>
+
+                <x-danger-button class="ms-3">
+                    {{ __('Update Task Group') }}
+                </x-danger-button>
+            </div>
+        </form>
+    </x-modal>
 </section>
