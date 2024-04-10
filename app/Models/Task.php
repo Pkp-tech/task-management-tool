@@ -9,43 +9,29 @@ class Task extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<string>
-     */
-    protected $fillable = ['task_group_id', 'title', 'description', 'assigned_to', 'status', 'labels', 'file_path'];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+    // Specify the fillable attributes
+    protected $fillable = [
+        'title',
+        'user_id',
+        'task_group_id',
+        'label_id',
     ];
 
-    /**
-     * Get the task group that owns this task.
-     */
-    public function group()
+    // Define the relationship with the User model
+    public function user()
     {
-        return $this->belongsTo(TaskGroup::class, 'task_group_id');
+        return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the user assigned to this task.
-     */
-    public function assignee()
+    // Define the relationship with the TaskGroup model
+    public function taskGroup()
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsTo(TaskGroup::class);
     }
 
-    protected $guarded = [];
-
-    public function labels()
+    // Define the relationship with the Label model
+    public function label()
     {
-        return $this->belongsToMany(Label::class);
+        return $this->belongsTo(Label::class);
     }
 }
