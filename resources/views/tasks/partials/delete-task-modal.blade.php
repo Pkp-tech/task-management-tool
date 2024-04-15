@@ -1,0 +1,38 @@
+<!-- Modal for edit/delete -->
+<!-- <div id="task-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white p-4 rounded-md">
+        <h2 id="modal-title" class="text-xl">Edit/Delete Task</h2>
+        <div id="modal-content"></div>
+        <button id="modal-close" class="mt-4">Close</button>
+    </div>
+</div> -->
+
+<!-- Modal -->
+<div id="delete-task-modal" class="task-modal fixed z-50 inset-0 bg-gray-900 bg-opacity-75 hidden">
+    <div class="flex justify-center items-center h-full">
+        <div class="bg-white rounded-md p-6">
+            <h2 id="modal-title" class="text-lg font-bold mb-4">Delete Task</h2>
+
+            <p>Are you sure you want to delete this task?</p>
+           
+            <!-- Form inside modal -->
+            <form method="post" action="{{ route('task.destroy') }}" class="p-6" enctype="multipart/form-data">
+                @csrf
+                @method('delete')
+
+                <!-- Task title input (for edit case) -->
+                <input type="text" id="task-title" name="task_title" class="border rounded w-full p-2 mb-4" disabled>
+               
+                <!-- Hidden input for task ID (edit or delete case) -->
+                <input type="hidden" id="task-id" name="task_id" value="">
+
+                <!-- Submit button -->
+                <button type="submit" class="bg-red-700 text-white rounded p-2">Delete</button>
+            </form>
+
+            <!-- Close button -->
+            <!-- <button id="modal-close" class="text-gray-500 hover:text-gray-700 absolute top-0 right-0 m-4">&times;</button> -->
+            <button class="modal-close" class="mt-4">Close</button>
+        </div>
+    </div>
+</div>

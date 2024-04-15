@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\v1\LabelController;
 use App\Http\Controllers\v1\TaskController;
 use App\Http\Controllers\v1\TaskGroupController;
 use Illuminate\Support\Facades\Route;
@@ -30,7 +31,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/task-group/{id}', [TaskGroupController::class, 'update'])->name('task-group.update');
     Route::delete('/task-group/{id}', [TaskGroupController::class, 'destroy'])->name('task-group.destroy');
 
+    Route::post('/add-label', [LabelController::class, 'add'])->name('label.add');
 
+    Route::post('/add-task', [TaskController::class, 'add'])->name('task.add');
+    Route::patch('/task', [TaskController::class, 'update'])->name('task.update');
+    Route::delete('/task', [TaskController::class, 'destroy'])->name('task.destroy');
+    Route::get('/get-task/{id}', [TaskController::class, 'getTaskData'])->name('task.get');;
 });
 
-require __DIR__.'/auth.php';
+Route::post('/update-task-group-session', [TaskGroupController::class, 'updateTaskGroupSession']);
+
+
+require __DIR__ . '/auth.php';

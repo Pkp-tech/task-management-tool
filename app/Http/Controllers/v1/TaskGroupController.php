@@ -37,9 +37,9 @@ class TaskGroupController extends Controller
         try {
             // dd('here');
             // Validate the incoming request
-            $request->validateWithBag('userDeletion', [
-                'password' => ['required', 'current_password'],
-            ]);
+            // $request->validateWithBag('userDeletion', [
+            //     'password' => ['required', 'current_password'],
+            // ]);
 
             $request->validateWithBag('taskGroupValidation', [
                 'task-group-name' => 'required|string|max:255|unique:task_groups,name,NULL,id,user_id,' . auth()->id(),
@@ -102,6 +102,29 @@ class TaskGroupController extends Controller
             return Redirect::route('task-group')->with('status', 'Task group deleted successfully.');
         } catch (\Exception $e) {
             return Redirect::back()->with('error', 'Failed to delete task group.')->withErrors([$e->getMessage()]);
+        }
+    }
+
+    /**
+     * Update the session variable to store the selected task group ID.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateTaskGroupSession(Request $request)
+    {
+        try {
+            // Retrieve the task group ID from the request
+            $taskGroupId = $request->input('task_group_id');
+
+            // Update the session variable with the selected task group ID
+            session()->put('selected_task_group_id', $taskGroupId);
+
+            // Return a success response
+            return response()->json(['message' => 'Session variable updated successfully']);
+        } catch (\Exception $e) {
+            // Return an error response if an exception occurs
+            return response()->json(['error' => 'Failed to update session variable: ' . $e->getMessage()], 500);
         }
     }
 }
