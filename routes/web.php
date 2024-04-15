@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/task-group/{id}', [TaskGroupController::class, 'destroy'])->name('task-group.destroy');
 
     Route::post('/add-label', [LabelController::class, 'add'])->name('label.add');
+    Route::patch('/update-label', [LabelController::class, 'update'])->name('label.update');
+    Route::delete('/label', [LabelController::class, 'destroy'])->name('label.destroy');
 
     Route::post('/add-task', [TaskController::class, 'add'])->name('task.add');
     Route::patch('/task', [TaskController::class, 'update'])->name('task.update');

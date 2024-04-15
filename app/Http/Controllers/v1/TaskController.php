@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Task;
 use App\Models\Label;
+use App\Models\TaskFile;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -103,6 +104,8 @@ class TaskController extends Controller
             // Validate the incoming request data
             $request->validate([
                 'task_title' => 'required|string|max:255',
+                'task_desc' => 'sometimes|string',
+                'task_files.*' => 'sometimes|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
                 // 'task_group_id' => 'required|exists:task_groups,id',
                 // 'label_id' => 'required|exists:labels,id',
             ]);
@@ -115,6 +118,20 @@ class TaskController extends Controller
 
             // Save the updated task
             $task->save();
+
+            // Handle file uploads
+            if ($request->hasFile('task_files')) {
+                foreach ($request->file('task_files') as $file) {
+                    // Store the file and get the path
+                    $path = $file->store('task_files', 'public');
+
+                    // Create a new TaskFile record
+                    TaskFile::create([
+                        'task_id' => $task->id,
+                        'file_path' => $path,
+                    ]);
+                }
+            }
 
             // Redirect the user back to the previous page
             return Redirect::route('dashboard')->with('status', 'Task updated successfully');

@@ -26,6 +26,7 @@
                     type="text"
                     class="mt-1 block w-3/4"
                     value="{{$taskGroup->name}}"
+                    required
                 />
 
                 <x-text-input

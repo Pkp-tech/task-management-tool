@@ -31,6 +31,14 @@ class TaskGroup extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Define the relationship with the Label model
+    public function labels()
+    {
+        // Define a one-to-many relationship with labels and enable cascade delete
+        return $this->hasMany(Label::class);
+    }
+
+
     /**
      * Scope a query to only include task groups related to the authenticated user.
      *

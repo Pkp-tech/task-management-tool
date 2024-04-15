@@ -46,6 +46,7 @@
                     type="text"
                     class="mt-1 block w-3/4"
                     placeholder="{{ __('Task Group Name') }}"
+                    required
                 />
 
                 <x-input-error :messages="$errors->userDeletion->get('task-group-name')" class="mt-2" />

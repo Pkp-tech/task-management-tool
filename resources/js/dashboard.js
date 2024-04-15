@@ -5,15 +5,26 @@ $(document).ready(function () {
         var newColumn = `
                 <div class="card bg-yellow-100 rounded-md p-4 mb-4">
                 <button id="add-list-btn" class="add-list-btn">+ Add another list</button>
+                <div class="flex justify-between items-center mb-4">
                     <div id="list-input" class="hidden list-input">
                         <input type="text" id="list-label" class="list-label" placeholder="Enter List Label">
                     </div>
-                    <h2 class="list-title font-semibold text-lg mb-4" style="display: none;"></h2>
-                    <ul class="task-list"></ul>
-                    <div class="task-input hidden">
-                        <input type="text" class="task-label" placeholder="Enter Task">
+                    <h2 class="list-title font-semibold text-lg" style="display: none;"></h2>
+                    <div class="relative">
+                        <button class="more-options-btn hidden">⋮</button>
+                        <div class="more-options-menu hidden absolute right-0 mt-2 bg-white shadow-lg rounded z-100 p-2">
+                            <ul>
+                                <li><button class="edit-label-btn" data-label-id="">Edit</button></li>
+                                <li><button class="delete-label-btn" data-label-id="" data-label-title="">Delete</button></li>
+                            </ul>
+                        </div>
                     </div>
-                    <button class="add-task-btn hidden">+ Add Task</button>
+                </div>
+                <ul class="task-list"></ul>
+                <div class="task-input hidden">
+                    <input type="text" class="task-label" placeholder="Enter Task">
+                </div>
+                <button class="add-task-btn hidden">+ Add Task</button>
                 </div>
             `;
         $(".card").last().after(newColumn);
@@ -26,13 +37,39 @@ $(document).ready(function () {
         $(this).closest(".card").find(".list-label").focus();
     });
 
+    // Add click event listener to the edit button in the more-options-menu
+    $(document).on("click", ".edit-label-btn", function () {
+        // Retrieve the card and the current label details
+        var card = $(this).closest(".card");
+        var listTitle = card.find(".list-title");
+        var listLabelInput = card.find(".list-input");
+        var listLabel = card.find(".list-label");
+        var currentLabel = listTitle.text();
+
+        // Hide the list title and show the input field with the current label
+        listTitle.hide();
+        listLabelInput.show();
+        listLabel.val(currentLabel).focus();
+
+        // Close the more-options dropdown
+        $(this).closest(".more-options-menu").addClass("hidden");
+    });
+
     // Add List Label Input Keyup Event
     $(document).on("keyup", ".list-label", function (event) {
         if (event.keyCode === 13) {
             var label = $(this).val().trim();
+            var card = $(this).closest(".card");
+            var labelId = card.data("label-id");
             if (label !== "") {
-                var card = $(this).closest(".card");
-                addLabel(label, card);
+                // Check if labelId is defined
+                if (labelId !== undefined && labelId !== null) {
+                    // If labelId is defined, update the label
+                    updateLabel(labelId, label, card);
+                } else {
+                    // If labelId is not defined, add the label
+                    addLabel(label, card);
+                }
             }
         }
     });
@@ -51,11 +88,38 @@ $(document).ready(function () {
                 console.log(response.message);
                 // Update UI to show label
                 card.find(".list-title").text(label).show();
+                card.find(".more-options-btn").removeClass("hidden");
                 card.find(".list-input").hide();
                 card.find(".add-task-btn").removeClass("hidden");
                 // Update the data-label-id attribute with the received label ID
                 card.attr("data-label-id", response.labelId);
+                card.find(".edit-label-btn, .delete-label-btn").attr("data-label-id", response.labelId);
+                card.find(".delete-label-btn").attr("data-label-title", label);
                 addColumn();
+            },
+            error: function (xhr, status, error) {
+                // Handle error
+                console.error(error);
+            },
+        });
+    }
+
+    // Function to update the label through AJAX
+    function updateLabel(labelId, newLabel, card) {
+        $.ajax({
+            url: "/update-label",
+            type: "PATCH",
+            data: {
+                label_id: labelId,
+                label_name: newLabel,
+                _token: $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (response) {
+                // Label updated successfully
+                console.log(response.message);
+                // Update the UI with the new label
+                card.find(".list-title").text(newLabel).show();
+                card.find(".list-input").hide();
             },
             error: function (xhr, status, error) {
                 // Handle error
@@ -267,5 +331,27 @@ $(document).ready(function () {
     $(".modal-close").click(function () {
         // Hide the modal
         $(".task-modal").addClass("hidden");
+    });
+
+    /**
+     * Label delete
+     */
+    // Add click event listener to the delete button
+    $(document).on("click", ".delete-label-btn", function () {
+        var labelId = $(this).data("label-id");
+        var labelTitle = $(this).data("label-title");
+
+        // Close the more-options dropdown
+        $(this).closest(".more-options-menu").addClass("hidden");
+
+        // Open the modal for deleting the task
+        var DeleteModal = $("#delete-label-modal");
+
+        // Populate the form in the modal with the retrieved task data
+        DeleteModal.find("#label-id").val(labelId); // Hidden input field for task ID
+        DeleteModal.find("#label-title").val(labelTitle);
+
+        // Show the modal
+        DeleteModal.removeClass("hidden");
     });
 });

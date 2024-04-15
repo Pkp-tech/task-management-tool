@@ -99,6 +99,12 @@ class TaskGroupController extends Controller
 
             $taskGroup->delete();
 
+            // Check the session for the task group ID
+            if (session()->has('selected_task_group_id') && session('selected_task_group_id') == $id) {
+                // Clear the session value if it matches the deleted task group ID
+                session()->forget('selected_task_group_id');
+            }
+
             return Redirect::route('task-group')->with('status', 'Task group deleted successfully.');
         } catch (\Exception $e) {
             return Redirect::back()->with('error', 'Failed to delete task group.')->withErrors([$e->getMessage()]);

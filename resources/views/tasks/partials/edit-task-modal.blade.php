@@ -19,7 +19,7 @@
                 @method('patch')
 
                 <!-- Task title input (for edit case) -->
-                <input type="text" id="task-title" name="task_title" class="border rounded w-full p-2 mb-4" placeholder="Task Title">
+                <input type="text" id="task-title" name="task_title" class="border rounded w-full p-2 mb-4" placeholder="Task Title" required>
 
                 <!-- Task description input (optional, add if you need) -->
                 <textarea id="task-description" name="task_description" class="border rounded w-full p-2 mb-4" placeholder="Task Description (Optional)"></textarea>

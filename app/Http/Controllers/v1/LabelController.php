@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use App\Models\Label;
 use Illuminate\Support\Facades\Auth;
 
@@ -62,27 +63,26 @@ class LabelController extends Controller
 
             // Validate the incoming request data
             $request->validate([
-                'name' => 'required|string|max:255',
-                'task_group_id' => 'required|exists:task_groups,id',
+                'label_name' => 'required|string|max:255',
             ]);
 
             // Update label attributes
-            $label->name = $request->input('name');
-            $label->task_group_id = $request->input('task_group_id');
+            $label->name = $request->input('label_name');
 
             // Save the updated label
             $label->save();
 
-            // Return a JSON response indicating success
-            return response()->json(['message' => 'Label updated successfully'], 200);
+            $newLabel = $label->name;
+
+            return response()->json(['message' => 'Label updated successfully', 'newLabel' => $newLabel], 200);
         } catch (\Exception $e) {
             // Handle any exceptions
-            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to update label: ' . $e->getMessage()], 500);
         }
     }
 
     // Delete a label based on the provided label ID from the request
-    public function delete(Request $request)
+    public function destroy(Request $request)
     {
         try {
             // Retrieve the label ID from the request
@@ -99,11 +99,12 @@ class LabelController extends Controller
             // Delete the label
             $label->delete();
 
-            // Return a JSON response indicating success
-            return response()->json(['message' => 'Label deleted successfully'], 200);
+         // Redirect the user back to the previous page
+            return Redirect::route('dashboard')->with('status', 'Label deleted successfully');
         } catch (\Exception $e) {
             // Handle any exceptions
-            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+            // dd('error-->' . $e);
+            return Redirect::route('dashboard')->with('error', 'Failed to delete label: ' . $e->getMessage());
         }
     }
 }
