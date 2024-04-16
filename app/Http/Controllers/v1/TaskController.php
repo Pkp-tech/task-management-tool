@@ -39,7 +39,10 @@ class TaskController extends Controller
         // Retrieve user and task group-related labels with associated tasks
         $labels = Label::where('user_id', $userId)
             ->where('task_group_id', $selectedTaskGroupId)
-            ->with('tasks')
+            ->with(['tasks' => function ($query) {
+                // Order tasks by 'updated_at' in ascending order
+                $query->orderBy('updated_at', 'asc');
+            }])
             ->get();
 
         return view('dashboard', [
@@ -192,6 +195,40 @@ class TaskController extends Controller
                 'message' => 'Task not found',
                 'error' => $e->getMessage()
             ], 404);
+        }
+    }
+
+    // Method to handle the update status request
+    public function updateStatus(Request $request, $taskId)
+    {
+        try {
+            // Validate the incoming request data
+            $request->validate([
+                'label_id' => 'required|integer',
+            ]);
+
+            // Retrieve the task by ID
+            $task = Task::findOrFail($taskId);
+
+            // Check if the current user is the owner of the task
+            if ($task->user_id !== Auth::id()) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            // Update the task's label_id
+            $task->label_id = $request->input('label_id');
+            $task->save();
+
+            // Return a successful response
+            return response()->json([
+                'message' => 'Task status updated successfully',
+                'task' => $task,
+            ], 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            return response()->json([
+                'error' => 'Failed to update task label: ' . $e->getMessage(),
+            ], 500);
         }
     }
 }

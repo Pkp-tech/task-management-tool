@@ -38,7 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/add-task', [TaskController::class, 'add'])->name('task.add');
     Route::patch('/task', [TaskController::class, 'update'])->name('task.update');
     Route::delete('/task', [TaskController::class, 'destroy'])->name('task.destroy');
-    Route::get('/get-task/{id}', [TaskController::class, 'getTaskData'])->name('task.get');;
+    Route::get('/get-task/{id}', [TaskController::class, 'getTaskData'])->name('task.get');
+    Route::put('/tasks/{taskId}/update-status', [TaskController::class, 'updateStatus'])->name('task.updateStatus');
 });
 
 Route::post('/update-task-group-session', [TaskGroupController::class, 'updateTaskGroupSession']);

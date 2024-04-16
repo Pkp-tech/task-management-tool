@@ -7,7 +7,7 @@ $(document).ready(function () {
                 <button id="add-list-btn" class="add-list-btn">+ Add another list</button>
                 <div class="flex justify-between items-center mb-4">
                     <div id="list-input" class="hidden list-input">
-                        <input type="text" id="list-label" class="list-label" placeholder="Enter List Label">
+                        <input type="text" id="list-label" class="list-label" placeholder="Enter List Title">
                     </div>
                     <h2 class="list-title font-semibold text-lg" style="display: none;"></h2>
                     <div class="relative">
@@ -22,7 +22,7 @@ $(document).ready(function () {
                 </div>
                 <ul class="task-list"></ul>
                 <div class="task-input hidden">
-                    <input type="text" class="task-label" placeholder="Enter Task">
+                    <input type="text" class="task-status" placeholder="Enter Task">
                 </div>
                 <button class="add-task-btn hidden">+ Add Task</button>
                 </div>
@@ -93,9 +93,20 @@ $(document).ready(function () {
                 card.find(".add-task-btn").removeClass("hidden");
                 // Update the data-label-id attribute with the received label ID
                 card.attr("data-label-id", response.labelId);
-                card.find(".edit-label-btn, .delete-label-btn").attr("data-label-id", response.labelId);
+                card.find(".edit-label-btn, .delete-label-btn").attr(
+                    "data-label-id",
+                    response.labelId
+                );
                 card.find(".delete-label-btn").attr("data-label-title", label);
                 addColumn();
+
+                // Add the ondrop attribute to the task list
+                card.attr("ondrop", "drop(event)");
+                card.find("task-list").attr("ondrop", "drop(event)");
+
+                // Add the ondragover attribute to the task list
+                card.attr("ondragover", "allowDrop(event)");
+                card.find(".task-list").attr("ondragover", "allowDrop(event)");
             },
             error: function (xhr, status, error) {
                 // Handle error
@@ -132,11 +143,11 @@ $(document).ready(function () {
     $(document).on("click", ".add-task-btn", function () {
         var card = $(this).closest(".card");
         card.find(".task-input").show();
-        card.find(".task-label").focus();
+        card.find(".task-status").focus();
     });
 
     // Task Input Field Keyup Event
-    $(document).on("keyup", ".task-label", function (event) {
+    $(document).on("keyup", ".task-status", function (event) {
         if (event.keyCode === 13) {
             var task = $(this).val().trim();
             if (task !== "") {
@@ -162,7 +173,9 @@ $(document).ready(function () {
                 console.log(response.message);
                 // Update UI to show the new task
                 var taskItem = $(
-                    '<li class="draggable bg-white rounded-md p-2 mb-4 flex justify-between items-center">' +
+                    '<li class="draggable bg-white rounded-md p-2 mb-4 flex justify-between items-center" data-task-id="' +
+                        response.taskId +
+                        '" draggable="true" ondragstart="drag(event)">' +
                         "<span>" +
                         task +
                         "</span>" +
@@ -182,7 +195,7 @@ $(document).ready(function () {
                         "</li>"
                 );
                 card.find(".task-list").append(taskItem);
-                card.find(".task-label").val("");
+                card.find(".task-status").val("");
                 card.find(".task-input").hide();
             },
             error: function (xhr, status, error) {
@@ -240,15 +253,6 @@ $(document).ready(function () {
             $(".more-options-menu").addClass("hidden");
         }
     });
-
-    ///////////////////////////////////////////////////
-    // Add click event listener to the more-options button
-    // $(document).on("click", ".more-options-btn", function () {
-    //     // Close all other dropdowns
-    //     $(".more-options-menu").addClass("hidden");
-    //     // Toggle visibility of the current dropdown menu
-    //     $(this).siblings(".more-options-menu").toggleClass("hidden");
-    // });
 
     // Add click event listener to the edit button
     $(document).on("click", ".edit-task-btn", function () {
@@ -311,7 +315,6 @@ $(document).ready(function () {
             EditModal.find("#task-id").val(response.task_id); // Hidden input field for task ID
             EditModal.find("#task-title").val(response.title);
             EditModal.find("#task-description").val(response.description);
-            // $("#task_label_id").val(response.label_id); // Assuming you have a label ID input
 
             // Show the modal
             EditModal.removeClass("hidden");
@@ -354,4 +357,46 @@ $(document).ready(function () {
         // Show the modal
         DeleteModal.removeClass("hidden");
     });
+
+    /**
+     * Drag & Drop feature
+     */
+    // let draggedItem = null;
+
+    // function allowDrop(ev) {
+    //     ev.preventDefault();
+    // }
+
+    // function drag(ev) {
+    //     draggedItem = ev.target;
+    // }
+
+    // function drop(ev) {
+    //     ev.preventDefault();
+    //     if (draggedItem) {
+    //         // Check if the drop target is a list itself
+    //         if (ev.target.tagName === "UL") {
+    //             // Append the dragged item to the target list
+    //             ev.target.appendChild(draggedItem);
+    //         }
+    //         // Check if the drop target is a list item
+    //         else if (ev.target.tagName === "LI") {
+    //             // Append the dragged item before or after the target item
+    //             if (
+    //                 ev.clientY <
+    //                 ev.target.getBoundingClientRect().top +
+    //                     ev.target.offsetHeight / 2
+    //             ) {
+    //                 ev.target.parentNode.insertBefore(draggedItem, ev.target); // Append before the target
+    //             } else {
+    //                 ev.target.parentNode.insertBefore(
+    //                     draggedItem,
+    //                     ev.target.nextSibling
+    //                 ); // Append after the target
+    //             }
+    //         }
+    //         console.log("Task moved");
+    //         draggedItem = null;
+    //     }
+    // }
 });
