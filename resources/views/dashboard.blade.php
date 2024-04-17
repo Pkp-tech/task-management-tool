@@ -5,6 +5,21 @@
         </h2>
     </x-slot>
 
+    <!-- Check for status and error messages -->
+    @if (session('status'))
+    <!-- Display the success message -->
+    <div class="alert alert-success">
+        {{ session('status') }}
+    </div>
+    @endif
+
+    @if (session('error'))
+    <!-- Display the error message -->
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+    @endif
+
     <div class="py-12" id="dashboard-message">
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="flex items-center justify-between bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -40,4 +55,3 @@
     @include('tasks.task-list')
 
 </x-app-layout>
-

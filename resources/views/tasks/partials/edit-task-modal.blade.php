@@ -1,12 +1,3 @@
-<!-- Modal for edit/delete -->
-<!-- <div id="task-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white p-4 rounded-md">
-        <h2 id="modal-title" class="text-xl">Edit/Delete Task</h2>
-        <div id="modal-content"></div>
-        <button id="modal-close" class="mt-4">Close</button>
-    </div>
-</div> -->
-
 <!-- Modal -->
 <div id="edit-task-modal" class="task-modal fixed z-50 inset-0 bg-gray-900 bg-opacity-75 hidden">
     <div class="flex justify-center items-center h-full">
@@ -27,17 +18,22 @@
                 <!-- Hidden input for task ID (edit or delete case) -->
                 <input type="hidden" id="task-id" name="task_id" value="">
 
+                <!-- Display the uploaded files -->
+                <div class="file-list">
+                </div>
+
                 <!-- File upload inputs -->
                 <input type="file" id="task-files" name="task_files[]" class="border rounded w-full p-2 mb-4" multiple>
 
+                <!-- Button container with Flexbox -->
+                <div class="flex justify-end">
+                    <!-- Close button -->
+                    <button type="button" class="modal-close text-gray-500 hover:text-gray-700 bg-gray-300 rounded p-2 mr-2">Close</button>
 
-                <!-- Submit button -->
-                <button type="submit" class="bg-blue-500 text-white rounded p-2">Save</button>
+                    <!-- Submit button -->
+                    <button type="submit" class="bg-blue-500 text-white rounded p-2">Save</button>
+                </div>
             </form>
-
-            <!-- Close button -->
-            <!-- <button id="modal-close" class="text-gray-500 hover:text-gray-700 absolute top-0 right-0 m-4">&times;</button> -->
-            <button class="modal-close" class="mt-4">Close</button>
         </div>
     </div>
 </div>

@@ -46,7 +46,7 @@
                     </ul>
 
                     <!-- Add Task Button -->
-                    <button class="add-task-btn">+ Add Task</button>
+                    <button class="add-task-btn text-yellow-700">+ Add Task</button>
 
                     <!-- Task Input -->
                     <div class="task-input hidden">
@@ -58,7 +58,7 @@
                 <!-- Empty card for adding a new list -->
                 <div class="card bg-yellow-100 rounded-md p-4 mb-4">
                     <!-- Add List Button -->
-                    <button id="add-list-btn" class="add-list-btn">
+                    <button id="add-list-btn" class="add-list-btn text-yellow-700">
                         @if($labels->isEmpty())
                         + Add List
                         @else
@@ -92,7 +92,7 @@
                         <input type="text" class="task-status" placeholder="Enter Task">
                     </div>
                     <!-- Add Task Button -->
-                    <button class="add-task-btn hidden">+ Add Task</button>
+                    <button class="add-task-btn text-yellow-700 hidden">+ Add Task</button>
                 </div>
 
             </div>

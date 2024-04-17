@@ -4,7 +4,7 @@ $(document).ready(function () {
         // var newColumnId = generateColumnId();
         var newColumn = `
                 <div class="card bg-yellow-100 rounded-md p-4 mb-4">
-                <button id="add-list-btn" class="add-list-btn">+ Add another list</button>
+                <button id="add-list-btn" class="add-list-btn text-yellow-700">+ Add another list</button>
                 <div class="flex justify-between items-center mb-4">
                     <div id="list-input" class="hidden list-input">
                         <input type="text" id="list-label" class="list-label" placeholder="Enter List Title">
@@ -24,7 +24,7 @@ $(document).ready(function () {
                 <div class="task-input hidden">
                     <input type="text" class="task-status" placeholder="Enter Task">
                 </div>
-                <button class="add-task-btn hidden">+ Add Task</button>
+                <button class="add-task-btn hidden text-yellow-700">+ Add Task</button>
                 </div>
             `;
         $(".card").last().after(newColumn);
@@ -315,6 +315,24 @@ $(document).ready(function () {
             EditModal.find("#task-id").val(response.task_id); // Hidden input field for task ID
             EditModal.find("#task-title").val(response.title);
             EditModal.find("#task-description").val(response.description);
+            // response contains the task files
+            var taskFilesDiv = EditModal.find('.file-list'); // Select the div with class 'task-file'
+            
+            // Clear previous file list
+            taskFilesDiv.empty();
+
+            console.log(response.files);
+            
+            // Iterate over the files in the response
+            response.files.forEach(function(file) {
+                // Create a file link and append to taskFilesDiv
+                var fileLink = $('<a>')
+                    .attr('href', response.storage_url+'/'+file.file_path)
+                    .attr('target', '_blank')
+                    .text(file.file_path);
+                taskFilesDiv.append(fileLink);
+                taskFilesDiv.append('<br>'); // Add a line break for each file
+            });
 
             // Show the modal
             EditModal.removeClass("hidden");

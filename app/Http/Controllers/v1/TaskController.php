@@ -108,7 +108,7 @@ class TaskController extends Controller
             $request->validate([
                 'task_title' => 'required|string|max:255',
                 'task_desc' => 'sometimes|string',
-                'task_files.*' => 'sometimes|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
+                'task_files.*' => 'sometimes|file|mimes:jpg,jpeg,png,pdf,doc,docx,txt|max:2048',
                 // 'task_group_id' => 'required|exists:task_groups,id',
                 // 'label_id' => 'required|exists:labels,id',
             ]);
@@ -140,7 +140,7 @@ class TaskController extends Controller
             return Redirect::route('dashboard')->with('status', 'Task updated successfully');
         } catch (\Exception $e) {
             // Handle any exceptions
-            // dd('error-->' . $e);
+            dd('error-->' . $e);
             return Redirect::route('dashboard')->with('error', 'Failed to update task: ' . $e->getMessage());
         }
     }
@@ -179,7 +179,10 @@ class TaskController extends Controller
     {
         try {
             // Find the task by ID
-            $task = Task::findOrFail($id);
+            $task = Task::with('taskFiles')->findOrFail($id);
+
+            // get the storage URL
+            $storageUrl = asset('storage/');
 
             // Return the task data as a JSON response
             return response()->json([
@@ -187,7 +190,8 @@ class TaskController extends Controller
                 'title' => $task->title,
                 'description' => $task->description,
                 'label_id' => $task->label_id,
-                // Include other fields as necessary
+                'files' => $task->taskFiles,
+                'storage_url' => $storageUrl,
             ], 200);
         } catch (\Exception $e) {
             // Handle any errors (e.g., task not found) and return an error response
