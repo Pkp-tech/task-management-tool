@@ -5,16 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Task extends Model
+class StatusColumn extends Model
 {
     use HasFactory;
 
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'status_columns';
+
+
     // Specify the fillable attributes
     protected $fillable = [
-        'title',
+        'name',
         'user_id',
         'task_group_id',
-        'status_column_id',
     ];
 
     // Define the relationship with the User model
@@ -29,15 +36,9 @@ class Task extends Model
         return $this->belongsTo(TaskGroup::class);
     }
 
-    // Define the relationship with the status column model
-    public function statusColumns()
+    // Define the relationship with the Task model
+    public function tasks()
     {
-        return $this->belongsTo(StatusColumn::class);
-    }
-
-    // Define the relationship with TaskFile
-    public function taskFiles()
-    {
-        return $this->hasMany(TaskFile::class);
+        return $this->hasMany(Task::class);
     }
 }

@@ -25,6 +25,9 @@
             <div class="flex items-center justify-between bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100 flex items-center space-x-4">
                     <div class="px-6">
+                        @if ($taskGroups->isEmpty())
+                        <div class="text-gray-600 dark:text-gray-400">No task groups available. Please create a task group to add tasks.</div>
+                        @else
                         <!-- Dropdown to select task group -->
                         <select id="task-group-dropdown" class="rounded-lg border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 mx-6">
                             <!-- Replace this with dynamic options loaded from backend -->
@@ -34,6 +37,7 @@
                             </option> @endforeach
                             <!-- Add more options as needed -->
                         </select>
+                        @endif
                     </div>
                     <div>
                         <!-- @if (Route::has('task-group'))
@@ -53,5 +57,8 @@
 
     <!-- Include task list  -->
     @include('tasks.task-list')
+
+    <!-- Include task list  -->
+    @include('tasks.static_status')
 
 </x-app-layout>

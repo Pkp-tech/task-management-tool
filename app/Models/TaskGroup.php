@@ -31,11 +31,11 @@ class TaskGroup extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Define the relationship with the Label model
-    public function labels()
+    // Define the relationship with the StatuColumn model
+    public function statusColumns()
     {
-        // Define a one-to-many relationship with labels and enable cascade delete
-        return $this->hasMany(Label::class);
+        // Define a one-to-many relationship with statusColumn and enable cascade delete
+        return $this->hasMany(StatusColumn::class);
     }
 
 

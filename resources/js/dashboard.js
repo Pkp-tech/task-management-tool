@@ -7,15 +7,15 @@ $(document).ready(function () {
                 <button id="add-list-btn" class="add-list-btn text-yellow-700">+ Add another list</button>
                 <div class="flex justify-between items-center mb-4">
                     <div id="list-input" class="hidden list-input">
-                        <input type="text" id="list-label" class="list-label" placeholder="Enter List Title">
+                        <input type="text" id="list-status-column" class="list-status-column" placeholder="Enter List Title">
                     </div>
                     <h2 class="list-title font-semibold text-lg" style="display: none;"></h2>
                     <div class="relative">
                         <button class="more-options-btn hidden">⋮</button>
                         <div class="more-options-menu hidden absolute right-0 mt-2 bg-white shadow-lg rounded z-100 p-2">
                             <ul>
-                                <li><button class="edit-label-btn" data-label-id="">Edit</button></li>
-                                <li><button class="delete-label-btn" data-label-id="" data-label-title="">Delete</button></li>
+                                <li><button class="edit-status-column-btn" data-status-column-id="">Edit</button></li>
+                                <li><button class="delete-status-column-btn" data-status-column-id="" data-status-column-title="">Delete</button></li>
                             </ul>
                         </div>
                     </div>
@@ -34,70 +34,70 @@ $(document).ready(function () {
     $(document).on("click", ".add-list-btn", function () {
         $(this).hide();
         $(this).closest(".card").find(".list-input").show();
-        $(this).closest(".card").find(".list-label").focus();
+        $(this).closest(".card").find(".list-status-column").focus();
     });
 
     // Add click event listener to the edit button in the more-options-menu
-    $(document).on("click", ".edit-label-btn", function () {
-        // Retrieve the card and the current label details
+    $(document).on("click", ".edit-status-column-btn", function () {
+        // Retrieve the card and the current statusColumn details
         var card = $(this).closest(".card");
         var listTitle = card.find(".list-title");
-        var listLabelInput = card.find(".list-input");
-        var listLabel = card.find(".list-label");
-        var currentLabel = listTitle.text();
+        var listStatusColumnInput = card.find(".list-input");
+        var listStatusColumn = card.find(".list-status-column");
+        var currentStatusColumn = listTitle.text();
 
-        // Hide the list title and show the input field with the current label
+        // Hide the list title and show the input field with the current statusColumn
         listTitle.hide();
-        listLabelInput.show();
-        listLabel.val(currentLabel).focus();
+        listStatusColumnInput.show();
+        listStatusColumn.val(currentStatusColumn).focus();
 
         // Close the more-options dropdown
         $(this).closest(".more-options-menu").addClass("hidden");
     });
 
-    // Add List Label Input Keyup Event
-    $(document).on("keyup", ".list-label", function (event) {
+    // Add List StatusColumn Input Keyup Event
+    $(document).on("keyup", ".list-status-column", function (event) {
         if (event.keyCode === 13) {
-            var label = $(this).val().trim();
+            var statusColumn = $(this).val().trim();
             var card = $(this).closest(".card");
-            var labelId = card.data("label-id");
-            if (label !== "") {
-                // Check if labelId is defined
-                if (labelId !== undefined && labelId !== null) {
-                    // If labelId is defined, update the label
-                    updateLabel(labelId, label, card);
+            var statusColumnId = card.data("status-column-id");
+            if (statusColumn !== "") {
+                // Check if statusColumnId is defined
+                if (statusColumnId !== undefined && statusColumnId !== null) {
+                    // If statusColumnId is defined, update the statusColumn
+                    updateStatusColumn(statusColumnId, statusColumn, card);
                 } else {
-                    // If labelId is not defined, add the label
-                    addLabel(label, card);
+                    // If statusColumnId is not defined, add the statusColumn
+                    addStatusColumn(statusColumn, card);
                 }
             }
         }
     });
 
-    // Function to add label through AJAX
-    function addLabel(label, card) {
+    // Function to add statusColumn through AJAX
+    function addStatusColumn(statusColumn, card) {
         $.ajax({
-            url: "/add-label",
+            url: "/add-status-column",
             type: "POST",
             data: {
-                label: label,
+                statusColumn: statusColumn,
                 _token: $('meta[name="csrf-token"]').attr("content"),
             },
             success: function (response) {
-                // Label added successfully
+                // StatusColumn added successfully
                 console.log(response.message);
-                // Update UI to show label
-                card.find(".list-title").text(label).show();
+                // Update UI to show statusColumn
+                card.find(".list-title").text(statusColumn).show();
                 card.find(".more-options-btn").removeClass("hidden");
                 card.find(".list-input").hide();
                 card.find(".add-task-btn").removeClass("hidden");
-                // Update the data-label-id attribute with the received label ID
-                card.attr("data-label-id", response.labelId);
-                card.find(".edit-label-btn, .delete-label-btn").attr(
-                    "data-label-id",
-                    response.labelId
+                // Update the data-status-column-id attribute with the received statusColumn ID
+                card.attr("data-status-column-id", response.statusColumnId);
+                card.find(".edit-status-column-btn, .delete-status-column-btn").attr(
+                    "data-status-column-id",
+                    response.statusColumnId
                 );
-                card.find(".delete-label-btn").attr("data-label-title", label);
+                card.find(".delete-status-column-btn").attr("data-status-column-title", statusColumn);
                 addColumn();
 
                 // Add the ondrop attribute to the task list
@@ -115,21 +115,21 @@ $(document).ready(function () {
         });
     }
 
-    // Function to update the label through AJAX
-    function updateLabel(labelId, newLabel, card) {
+    // Function to update the statusColumn through AJAX
+    function updateStatusColumn(statusColumnId, newStatusColumn, card) {
         $.ajax({
-            url: "/update-label",
+            url: "/update-status-column",
             type: "PATCH",
             data: {
-                label_id: labelId,
-                label_name: newLabel,
+                status_column_id: statusColumnId,
+                status_column_name: newStatusColumn,
                 _token: $('meta[name="csrf-token"]').attr("content"),
             },
             success: function (response) {
-                // Label updated successfully
+                // StatusColumn updated successfully
                 console.log(response.message);
-                // Update the UI with the new label
-                card.find(".list-title").text(newLabel).show();
+                // Update the UI with the new statusColumn
+                card.find(".list-title").text(newStatusColumn).show();
                 card.find(".list-input").hide();
             },
             error: function (xhr, status, error) {
@@ -152,20 +152,20 @@ $(document).ready(function () {
             var task = $(this).val().trim();
             if (task !== "") {
                 var card = $(this).closest(".card");
-                var labelId = card.data("label-id");
-                addTask(task, card, labelId);
+                var statusColumnId = card.data("status-column-id");
+                addTask(task, card, statusColumnId);
             }
         }
     });
 
     // Function to add task through AJAX
-    function addTask(task, card, labelId) {
+    function addTask(task, card, statusColumnId) {
         $.ajax({
             url: "/add-task",
             type: "POST",
             data: {
                 task: task,
-                label_id: labelId,
+                status_column_id: statusColumnId,
                 _token: $('meta[name="csrf-token"]').attr("content"),
             },
             success: function (response) {
@@ -256,7 +256,7 @@ $(document).ready(function () {
 
     // Add click event listener to the edit button
     $(document).on("click", ".edit-task-btn", function () {
-        // Retrieve task ID, title, description, and label ID from data attributes
+        // Retrieve task ID, title, description, and statusColumn ID from data attributes
         var taskId = $(this).data("task-id");
 
         // Close the more-options dropdown
@@ -279,7 +279,7 @@ $(document).ready(function () {
 
     // Add click event listener to the delete button
     $(document).on("click", ".delete-task-btn", function () {
-        // Retrieve task ID, title, description, and label ID from data attributes
+        // Retrieve task ID, title, description, and statusColumn ID from data attributes
         var taskId = $(this).data("task-id");
         // var taskTitle = $(this).data("task-title");
 
@@ -355,22 +355,22 @@ $(document).ready(function () {
     });
 
     /**
-     * Label delete
+     * StatusColumn delete
      */
     // Add click event listener to the delete button
-    $(document).on("click", ".delete-label-btn", function () {
-        var labelId = $(this).data("label-id");
-        var labelTitle = $(this).data("label-title");
+    $(document).on("click", ".delete-status-column-btn", function () {
+        var statusColumnId = $(this).data("status-column-id");
+        var statusColumnTitle = $(this).data("status-column-title");
 
         // Close the more-options dropdown
         $(this).closest(".more-options-menu").addClass("hidden");
 
         // Open the modal for deleting the task
-        var DeleteModal = $("#delete-label-modal");
+        var DeleteModal = $("#delete-status-column-modal");
 
         // Populate the form in the modal with the retrieved task data
-        DeleteModal.find("#label-id").val(labelId); // Hidden input field for task ID
-        DeleteModal.find("#label-title").val(labelTitle);
+        DeleteModal.find("#status-column-id").val(statusColumnId); // Hidden input field for task ID
+        DeleteModal.find("#status-column-title").val(statusColumnTitle);
 
         // Show the modal
         DeleteModal.removeClass("hidden");

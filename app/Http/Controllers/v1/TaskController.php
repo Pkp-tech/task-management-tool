@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Task;
-use App\Models\Label;
+use App\Models\StatusColumn;
 use App\Models\TaskFile;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,8 +36,8 @@ class TaskController extends Controller
             $request->session()->put('selected_task_group_id', $selectedTaskGroupId);
         }
 
-        // Retrieve user and task group-related labels with associated tasks
-        $labels = Label::where('user_id', $userId)
+        // Retrieve user and task group-related statusColumns with associated tasks
+        $statusColumns = StatusColumn::where('user_id', $userId)
             ->where('task_group_id', $selectedTaskGroupId)
             ->with(['tasks' => function ($query) {
                 // Order tasks by 'updated_at' in ascending order
@@ -49,7 +49,7 @@ class TaskController extends Controller
             'user' => $request->user(),
             'taskGroups' => $taskGroups,
             'selectedTaskGroupId' => $selectedTaskGroupId, // Pass the selected task group ID to the 
-            'labels' => $labels,
+            'statusColumns' => $statusColumns,
         ]);
     }
 
@@ -62,7 +62,7 @@ class TaskController extends Controller
             // Validate the incoming request
             $request->validate([
                 'task' => 'required|string|max:255',
-                'label_id' => 'required|exists:labels,id',
+                'status_column_id' => 'required|exists:status_columns,id',
             ]);
 
             // Create a new task instance
@@ -70,7 +70,7 @@ class TaskController extends Controller
             $task->title = $request->input('task');
             $task->task_group_id =  $request->session()->get('selected_task_group_id');
             $task->user_id = auth()->id(); // Assuming you have authentication in place
-            $task->label_id = $request->input('label_id');
+            $task->status_column_id = $request->input('status_column_id');
             // You can add other properties as needed
 
             // Save the task
@@ -110,14 +110,14 @@ class TaskController extends Controller
                 'task_desc' => 'sometimes|string',
                 'task_files.*' => 'sometimes|file|mimes:jpg,jpeg,png,pdf,doc,docx,txt|max:2048',
                 // 'task_group_id' => 'required|exists:task_groups,id',
-                // 'label_id' => 'required|exists:labels,id',
+                // 'status_column_id' => 'required|exists:statusColumns,id',
             ]);
 
             // Update task attributes
             $task->title = $request->input('task_title');
             $task->description = $request->input('task_description');
             // $task->task_group_id = $request->input('task_group_id');
-            // $task->label_id = $request->input('label_id');
+            // $task->status_column_id = $request->input('status_column_id');
 
             // Save the updated task
             $task->save();
@@ -189,7 +189,7 @@ class TaskController extends Controller
                 'task_id' => $task->id,
                 'title' => $task->title,
                 'description' => $task->description,
-                'label_id' => $task->label_id,
+                'status_column_id' => $task->status_column_id,
                 'files' => $task->taskFiles,
                 'storage_url' => $storageUrl,
             ], 200);
@@ -208,7 +208,7 @@ class TaskController extends Controller
         try {
             // Validate the incoming request data
             $request->validate([
-                'label_id' => 'required|integer',
+                'status_column_id' => 'required|integer',
             ]);
 
             // Retrieve the task by ID
@@ -219,8 +219,8 @@ class TaskController extends Controller
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
 
-            // Update the task's label_id
-            $task->label_id = $request->input('label_id');
+            // Update the task's status_column_id
+            $task->status_column_id = $request->input('status_column_id');
             $task->save();
 
             // Return a successful response
@@ -231,7 +231,7 @@ class TaskController extends Controller
         } catch (\Exception $e) {
             // Handle any exceptions
             return response()->json([
-                'error' => 'Failed to update task label: ' . $e->getMessage(),
+                'error' => 'Failed to update task status: ' . $e->getMessage(),
             ], 500);
         }
     }

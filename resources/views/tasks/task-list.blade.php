@@ -3,22 +3,22 @@
         <div class="overflow-x-auto">
             <div class="grid grid-cols-3 gap-4">
                 <!-- Dynamic List Column -->
-                @foreach ($labels as $label)
-                <div class="card bg-yellow-100 rounded-md p-4 mb-4" data-label-id="{{ $label->id }}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                @foreach ($statusColumns as $statusColumn)
+                <div class="card bg-yellow-100 rounded-md p-4 mb-4" data-status-column-id="{{ $statusColumn->id }}" ondrop="drop(event)" ondragover="allowDrop(event)">
                     <!-- List Title -->
                     <div class="flex justify-between items-center mb-4">
                         <div id="list-input" class="hidden list-input">
-                            <input type="text" id="list-label" class="list-label" placeholder="Enter List Title">
+                            <input type="text" id="list-status-column" class="list-status-column" placeholder="Enter List Title">
                         </div>
-                        <h2 class="list-title font-semibold text-lg">{{ $label->name }}</h2>
+                        <h2 class="list-title font-semibold text-lg">{{ $statusColumn->name }}</h2>
                         <!-- More Options Button -->
                         <div class="relative">
                             <button class="more-options-btn">⋮</button>
                             <!-- More Options Menu -->
                             <div class="more-options-menu hidden absolute right-0 mt-2 bg-white shadow-lg rounded z-100 p-2">
                                 <ul>
-                                    <li><button class="edit-label-btn" data-label-id="{{ $label->id }}">Edit</button></li>
-                                    <li><button class="delete-label-btn" data-label-id="{{ $label->id }}" data-label-title="{{ $label->name }}">Delete</button></li>
+                                    <li><button class="edit-status-column-btn" data-status-column-id="{{ $statusColumn->id }}">Edit</button></li>
+                                    <li><button class="delete-status-column-btn" data-status-column-id="{{ $statusColumn->id }}" data-status-column-title="{{ $statusColumn->name }}">Delete</button></li>
                                 </ul>
                             </div>
                         </div>
@@ -26,10 +26,24 @@
 
                     <!-- Task List -->
                     <ul class="task-list" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        @foreach ($label->tasks as $task)
+                        @foreach ($statusColumn->tasks as $task)
                         <li class="draggable bg-white rounded-md p-2 mb-4 flex justify-between items-center" data-task-id="{{ $task->id }}" draggable="true" ondragstart="drag(event)">
-                            <!-- Task title -->
-                            <span>{{ $task->title }}</span>
+                            <div class="flex flex-col">
+                                <!-- Task title -->
+                                <span>{{ $task->title }}</span>
+                                <!-- Task description (with truncation and ellipsis) -->
+                                <span class="task-description text-sm text-gray-600 overflow-hidden whitespace-nowrap overflow-ellipsis">
+                                    {{ \Str::limit($task->description, 40, '...') }}
+                                </span>
+                                
+                                <div class="task-status-columns flex flex-wrap gap-1 mt-1">
+                                    <span class="task-status-column text-sm text-blue-600 border border-blue-600 rounded px-1">On Hold</span>
+                                    <span class="task-status-column text-sm text-blue-600 border border-blue-600 rounded px-1">Canceled</span>
+                                    <span class="task-status-column text-sm text-blue-600 border border-blue-600 rounded px-1">changed</span>
+                                    <span class="task-status-column text-sm text-blue-600 border border-blue-600 rounded px-1">fixed</span>
+                                </div>
+
+                            </div>
 
                             <!-- Three-dot menu for more options -->
                             <div class="relative">
@@ -59,17 +73,17 @@
                 <div class="card bg-yellow-100 rounded-md p-4 mb-4">
                     <!-- Add List Button -->
                     <button id="add-list-btn" class="add-list-btn text-yellow-700">
-                        @if($labels->isEmpty())
+                        @if($statusColumns->isEmpty())
                         + Add List
                         @else
                         + Add Another List
                         @endif
                     </button>
 
-                    <!-- List Label Input -->
+                    <!-- List Status Column Input -->
                     <div class="flex justify-between items-center mb-4">
                         <div id="list-input" class="hidden list-input">
-                            <input type="text" id="list-label" class="list-label" placeholder="Enter List Title">
+                            <input type="text" id="list-status-column" class="list-status-column" placeholder="Enter List Title">
                         </div>
                         <h2 class="list-title font-semibold text-lg" style="display: none;"></h2>
                         <!-- More Options Button -->
@@ -78,8 +92,8 @@
                             <!-- More Options Menu -->
                             <div class="more-options-menu hidden absolute right-0 mt-2 bg-white shadow-lg rounded z-100 p-2">
                                 <ul>
-                                    <li><button class="edit-label-btn" data-label-id="">Edit</button></li>
-                                    <li><button class="delete-label-btn" data-label-id="" data-label-title="">Delete</button></li>
+                                    <li><button class="edit-status-column-btn" data-status-column-id="">Edit</button></li>
+                                    <li><button class="delete-status-column-btn" data-status-column-id="" data-status-column-title="">Delete</button></li>
                                 </ul>
                             </div>
                         </div>
@@ -102,7 +116,7 @@
 
 @include('tasks.partials.edit-task-modal')
 @include('tasks.partials.delete-task-modal')
-@include('tasks.partials.delete-label-modal')
+@include('tasks.partials.delete-status-column-modal')
 
 <script>
     let draggedItem = null;
@@ -139,14 +153,14 @@
                 // Append the dragged item to the UL element
                 ulElement.appendChild(draggedItem);
 
-                // Retrieve the data-label-id of the new list (drop target)
-                let newLabelId = ulElement.closest('.card').getAttribute('data-label-id');
+                // Retrieve the data-status-column-id of the new list (drop target)
+                let newStatusColumnId = ulElement.closest('.card').getAttribute('data-status-column-id');
 
                 // Retrieve the data-task-id of the dragged element (task)
                 let taskId = draggedItem.getAttribute('data-task-id');
 
-                // Make an AJAX request to update the task's label_id on the server side
-                updateTaskStatus(taskId, newLabelId);
+                // Make an AJAX request to update the task's status_column_id on the server side
+                updateTaskStatus(taskId, newStatusColumnId);
 
                 console.log('Task moved to new list.');
             }
@@ -156,14 +170,14 @@
         }
     }
 
-    // Function to update the task's label_id on the server side
-    function updateTaskStatus(taskId, newLabelId) {
-        // Perform an AJAX request to update the task's label_id
+    // Function to update the task's status_column_id on the server side
+    function updateTaskStatus(taskId, newStatusColumnId) {
+        // Perform an AJAX request to update the task's status_column_id
         $.ajax({
-            url: `/tasks/${taskId}/update-status`, // Endpoint to update task's label_id
+            url: `/tasks/${taskId}/update-status`, // Endpoint to update task's status_column_id
             type: 'PUT', // Use PUT method for updating data
             data: {
-                label_id: newLabelId,
+                status_column_id: newStatusColumnId,
                 _token: $('meta[name="csrf-token"]').attr("content"),
             },
             success: function(response) {
@@ -173,7 +187,7 @@
             },
             error: function(xhr, status, error) {
                 // Handle errors
-                console.error('Error updating task label_id:', error);
+                console.error('Error updating task status_column_id:', error);
                 // Optionally display an error message to the user
             }
         });

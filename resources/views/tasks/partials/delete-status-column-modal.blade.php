@@ -1,21 +1,21 @@
 <!-- Modal -->
-<div id="delete-label-modal" class="task-modal fixed z-50 inset-0 bg-gray-900 bg-opacity-75 hidden">
+<div id="delete-status-column-modal" class="task-modal fixed z-50 inset-0 bg-gray-900 bg-opacity-75 hidden">
     <div class="flex justify-center items-center h-full">
         <div class="bg-white rounded-md p-6">
-            <h2 id="modal-title" class="text-lg font-bold mb-4">Delete Label</h2>
+            <h2 id="modal-title" class="text-lg font-bold mb-4">Delete Status</h2>
 
-            <p>Are you sure you want to delete this label?</p>
+            <p>Are you sure you want to delete this status column</p>
 
             <!-- Form inside modal -->
-            <form method="post" action="{{ route('label.destroy') }}" class="p-6" enctype="multipart/form-data">
+            <form method="post" action="{{ route('status-column.destroy') }}" class="p-6" enctype="multipart/form-data">
                 @csrf
                 @method('delete')
 
                 <!-- Task title input (for edit case) -->
-                <input type="text" id="label-title" name="label_title" class="border rounded w-full p-2 mb-4" disabled>
+                <input type="text" id="status-column-title" name="status_column_title" class="border rounded w-full p-2 mb-4" disabled>
 
-                <!-- Hidden input for label ID (edit or delete case) -->
-                <input type="hidden" id="label-id" name="label_id" value="">
+                <!-- Hidden input for status columnID (edit or delete case) -->
+                <input type="hidden" id="status-column-id" name="status_column_id" value="">
 
                 <!-- Button container with Flexbox -->
                 <div class="flex justify-end">

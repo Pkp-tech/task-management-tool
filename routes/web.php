@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\v1\LabelController;
+use App\Http\Controllers\v1\StatusColumnController;
 use App\Http\Controllers\v1\TaskController;
 use App\Http\Controllers\v1\TaskGroupController;
 use Illuminate\Support\Facades\Route;
@@ -31,9 +31,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/task-group/{id}', [TaskGroupController::class, 'update'])->name('task-group.update');
     Route::delete('/task-group/{id}', [TaskGroupController::class, 'destroy'])->name('task-group.destroy');
 
-    Route::post('/add-label', [LabelController::class, 'add'])->name('label.add');
-    Route::patch('/update-label', [LabelController::class, 'update'])->name('label.update');
-    Route::delete('/label', [LabelController::class, 'destroy'])->name('label.destroy');
+    Route::post('/add-status-column', [StatusColumnController::class, 'add'])->name('status-column.add');
+    Route::patch('/update-status-column', [StatusColumnController::class, 'update'])->name('status-column.update');
+    Route::delete('/status-column', [StatusColumnController::class, 'destroy'])->name('status-column.destroy');
 
     Route::post('/add-task', [TaskController::class, 'add'])->name('task.add');
     Route::patch('/task', [TaskController::class, 'update'])->name('task.update');

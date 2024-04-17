@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('status_columns', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('task_group_id')->constrained()->onDelete('cascade');
-            $table->foreignId('status_column_id')->constrained()->onDelete('cascade');
+            $table->foreignId('task_group_id')->constrained('task_groups')->onDelete('cascade');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('status_columns');
     }
 };
