@@ -56,9 +56,6 @@
     </div>
 
     <!-- Include task list  -->
-    @include('tasks.task-list')
-
-    <!-- Include task list  -->
-    @include('tasks.static_status')
+    @include('tasks.task-list', ['labels' => $labels])
 
 </x-app-layout>

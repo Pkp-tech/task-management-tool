@@ -17,6 +17,14 @@ export default {
             zIndex: {
                 100: "100",
             },
+            noScrollbar: {
+                scrollbarWidth: "none" /* Firefox */,
+                msOverflowStyle: "none" /* Internet Explorer */,
+                "&::-webkit-scrollbar": {
+                    display:
+                        "none" /* Chrome, Safari, and other WebKit browsers */,
+                },
+            },
         },
     },
 

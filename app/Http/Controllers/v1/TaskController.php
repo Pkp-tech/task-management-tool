@@ -9,10 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Task;
+use App\Models\Label;
 use App\Models\StatusColumn;
 use App\Models\TaskFile;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
 {
@@ -41,8 +42,13 @@ class TaskController extends Controller
             ->where('task_group_id', $selectedTaskGroupId)
             ->with(['tasks' => function ($query) {
                 // Order tasks by 'updated_at' in ascending order
-                $query->orderBy('updated_at', 'asc');
+                $query->orderBy('updated_at', 'asc')
+                    ->with('labels'); // Eager load task labels for each task;
             }])
+            ->get();
+
+        // Retrieve labels related to the selected task group
+        $labels = Label::where('task_group_id', $selectedTaskGroupId)  // Filter labels by the selected task group ID
             ->get();
 
         return view('dashboard', [
@@ -50,6 +56,7 @@ class TaskController extends Controller
             'taskGroups' => $taskGroups,
             'selectedTaskGroupId' => $selectedTaskGroupId, // Pass the selected task group ID to the 
             'statusColumns' => $statusColumns,
+            'labels' =>  $labels,
         ]);
     }
 
@@ -88,7 +95,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Update task group.
+     * Update task.
      */
     public function update(Request $request)
     {
@@ -136,17 +143,23 @@ class TaskController extends Controller
                 }
             }
 
+            //Sync task with provided label IDs
+            if ($request->has('label_ids')) {
+                $labelIds = $request->input('label_ids');
+                $task->labels()->sync($labelIds);
+            }
+
             // Redirect the user back to the previous page
             return Redirect::route('dashboard')->with('status', 'Task updated successfully');
         } catch (\Exception $e) {
             // Handle any exceptions
-            dd('error-->' . $e);
+            // dd('error-->' . $e);
             return Redirect::route('dashboard')->with('error', 'Failed to update task: ' . $e->getMessage());
         }
     }
 
     /**
-     * Delete a task group.
+     * Delete a task.
      */
     public function destroy(Request $request)
     {
@@ -179,7 +192,7 @@ class TaskController extends Controller
     {
         try {
             // Find the task by ID
-            $task = Task::with('taskFiles')->findOrFail($id);
+            $task = Task::with('taskFiles')->with('taskLabels')->findOrFail($id);
 
             // get the storage URL
             $storageUrl = asset('storage/');
@@ -191,6 +204,7 @@ class TaskController extends Controller
                 'description' => $task->description,
                 'status_column_id' => $task->status_column_id,
                 'files' => $task->taskFiles,
+                'taskLabels' => $task->taskLabels,
                 'storage_url' => $storageUrl,
             ], 200);
         } catch (\Exception $e) {
@@ -233,6 +247,38 @@ class TaskController extends Controller
             return response()->json([
                 'error' => 'Failed to update task status: ' . $e->getMessage(),
             ], 500);
+        }
+    }
+
+    /**
+     * Delete a file.
+     */
+    public function removeFile(Request $request)
+    {
+        // Retrieve the file ID and file path from the request
+        $fileId = $request->input('file_id');
+
+        // Find the file record in the database using the file ID
+        $file = TaskFile::find($fileId);
+
+        // Check if the file exists
+        if ($file) {
+            // Delete the file from the storage
+            Storage::disk('public')->delete($file->file_path);
+
+            // Delete the file record from the database
+            $file->delete();
+
+            // Return a success response
+            return response()->json([
+                'success' => true
+            ]);
+        } else {
+            // Return an error response if the file is not found
+            return response()->json([
+                'success' => false,
+                'error' => 'File not found'
+            ]);
         }
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\v1\LabelController;
 use App\Http\Controllers\v1\StatusColumnController;
 use App\Http\Controllers\v1\TaskController;
 use App\Http\Controllers\v1\TaskGroupController;
@@ -40,6 +41,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/task', [TaskController::class, 'destroy'])->name('task.destroy');
     Route::get('/get-task/{id}', [TaskController::class, 'getTaskData'])->name('task.get');
     Route::put('/tasks/{taskId}/update-status', [TaskController::class, 'updateStatus'])->name('task.updateStatus');
+    Route::delete('/remove-file', [TaskController::class, 'removeFile'])->name('remove-file');
+
+    Route::post('/add-label', [LabelController::class, 'createLabel'])->name('label.add');
+
 });
 
 Route::post('/update-task-group-session', [TaskGroupController::class, 'updateTaskGroupSession']);

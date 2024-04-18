@@ -40,4 +40,15 @@ class Task extends Model
     {
         return $this->hasMany(TaskFile::class);
     }
+
+    public function labels()
+    {
+        return $this->belongsToMany(Label::class, 'task_labels');
+    }
+
+    // Define the relationship with TaskFile
+    public function taskLabels()
+    {
+        return $this->hasMany(TaskLabel::class);
+    }
 }

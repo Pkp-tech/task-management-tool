@@ -3,7 +3,7 @@ $(document).ready(function () {
     function addColumn() {
         // var newColumnId = generateColumnId();
         var newColumn = `
-                <div class="card bg-yellow-100 rounded-md p-4 mb-4">
+                <div class="card bg-yellow-100 rounded-md p-4 mb-4 min-w-[400px]">
                 <button id="add-list-btn" class="add-list-btn text-yellow-700">+ Add another list</button>
                 <div class="flex justify-between items-center mb-4">
                     <div id="list-input" class="hidden list-input">
@@ -93,11 +93,13 @@ $(document).ready(function () {
                 card.find(".add-task-btn").removeClass("hidden");
                 // Update the data-status-column-id attribute with the received statusColumn ID
                 card.attr("data-status-column-id", response.statusColumnId);
-                card.find(".edit-status-column-btn, .delete-status-column-btn").attr(
-                    "data-status-column-id",
-                    response.statusColumnId
+                card.find(
+                    ".edit-status-column-btn, .delete-status-column-btn"
+                ).attr("data-status-column-id", response.statusColumnId);
+                card.find(".delete-status-column-btn").attr(
+                    "data-status-column-title",
+                    statusColumn
                 );
-                card.find(".delete-status-column-btn").attr("data-status-column-title", statusColumn);
                 addColumn();
 
                 // Add the ondrop attribute to the task list
@@ -316,23 +318,78 @@ $(document).ready(function () {
             EditModal.find("#task-title").val(response.title);
             EditModal.find("#task-description").val(response.description);
             // response contains the task files
-            var taskFilesDiv = EditModal.find('.file-list'); // Select the div with class 'task-file'
-            
+            var taskFilesDiv = EditModal.find(".file-list"); // Select the div with class 'task-file'
+
             // Clear previous file list
             taskFilesDiv.empty();
 
-            console.log(response.files);
-            
             // Iterate over the files in the response
-            response.files.forEach(function(file) {
-                // Create a file link and append to taskFilesDiv
-                var fileLink = $('<a>')
-                    .attr('href', response.storage_url+'/'+file.file_path)
-                    .attr('target', '_blank')
+            // response.files.forEach(function (file) {
+            //     // Create a file link and append to taskFilesDiv
+            //     var fileLink = $("<a>")
+            //         .attr("href", response.storage_url + "/" + file.file_path)
+            //         .attr("target", "_blank")
+            //         .text(file.file_path);
+            //     taskFilesDiv.append(fileLink);
+            //     taskFilesDiv.append("<br>"); // Add a line break for each file
+            // });
+
+            response.files.forEach(function (file, index) {
+                // Create a container div for each file
+                var fileContainer = $("<div>").addClass(
+                    "file-container flex justify-between items-center mb-2"
+                );
+
+                // Create a serial number element
+                var serialNumber = $("<span>")
+                    .addClass("file-serial-number mr-2")
+                    .text(index + 1 + "."); // Serial numbers start from 1
+
+                // Create a file link
+                var fileLink = $("<a>")
+                    .attr("href", response.storage_url + "/" + file.file_path)
+                    .attr("target", "_blank")
                     .text(file.file_path);
-                taskFilesDiv.append(fileLink);
-                taskFilesDiv.append('<br>'); // Add a line break for each file
+
+                // Create a remove button for each file
+                var removeButton = $("<button>")
+                    .addClass("remove-file-btn text-red-500 ml-2 font-bold")
+                    .attr("type", "button")
+                    .attr("data-file-id", file.id) // Attach file ID for removal
+                    .text("X");
+
+                // Append serial number, file link, and remove button to the file container
+                // fileContainer.append(serialNumber);
+                fileContainer.append(fileLink);
+                fileContainer.append(removeButton);
+
+                // Append the file container to the task files div
+                taskFilesDiv.append(fileContainer);
             });
+
+            // Initialize an array to hold the label IDs
+            let taskLabelIds = [];
+
+            // Iterate through the response array to extract the label IDs
+            response.taskLabels.forEach(function (label) {
+                taskLabelIds.push(label.label_id);
+            });
+
+            console.log(taskLabelIds);
+
+            // Iterate through the label checkboxes
+            EditModal.find('.label-checkboxes input[type="checkbox"]').each(
+                function () {
+                    const labelId = $(this).val(); // Get the value of the checkbox (label ID)
+
+                    // Check the checkbox if the label ID is in the taskLabelIds array
+                    if (taskLabelIds.includes(parseInt(labelId))) {
+                        $(this).prop("checked", true);
+                    } else {
+                        $(this).prop("checked", false);
+                    }
+                }
+            );
 
             // Show the modal
             EditModal.removeClass("hidden");
@@ -377,44 +434,81 @@ $(document).ready(function () {
     });
 
     /**
-     * Drag & Drop feature
+     * Label tasks
      */
-    // let draggedItem = null;
+    $(document).on("click", ".add-new-label-btn", function () {
+        // Find the form that the clicked button belongs to
+        const form = $(this).closest("form");
 
-    // function allowDrop(ev) {
-    //     ev.preventDefault();
-    // }
+        // Find the input element for new label within the form
+        const newLabelInput = form.find(".new-label-input");
 
-    // function drag(ev) {
-    //     draggedItem = ev.target;
-    // }
+        // Find the container for the checkboxes
+        const labelCheckboxes = form.find(".label-checkboxes");
 
-    // function drop(ev) {
-    //     ev.preventDefault();
-    //     if (draggedItem) {
-    //         // Check if the drop target is a list itself
-    //         if (ev.target.tagName === "UL") {
-    //             // Append the dragged item to the target list
-    //             ev.target.appendChild(draggedItem);
-    //         }
-    //         // Check if the drop target is a list item
-    //         else if (ev.target.tagName === "LI") {
-    //             // Append the dragged item before or after the target item
-    //             if (
-    //                 ev.clientY <
-    //                 ev.target.getBoundingClientRect().top +
-    //                     ev.target.offsetHeight / 2
-    //             ) {
-    //                 ev.target.parentNode.insertBefore(draggedItem, ev.target); // Append before the target
-    //             } else {
-    //                 ev.target.parentNode.insertBefore(
-    //                     draggedItem,
-    //                     ev.target.nextSibling
-    //                 ); // Append after the target
-    //             }
-    //         }
-    //         console.log("Task moved");
-    //         draggedItem = null;
-    //     }
-    // }
+        // Get the new label name from the input field
+        const newLabelName = newLabelInput.val().trim();
+
+        if (newLabelName !== "") {
+            // Send AJAX request to server to create a new label
+            $.ajax({
+                url: "/add-label",
+                type: "POST",
+                data: {
+                    name: newLabelName,
+                    _token: $('meta[name="csrf-token"]').attr("content"), // CSRF token for security
+                },
+                success: function (data) {
+                    if (data.success) {
+                        // Create a new checkbox for the new label and add it to the container
+                        const newCheckbox = $(`
+                            <div class="mb-2">
+                                <input type="checkbox" class="label-checkbox" name="label_ids[]" value="${data.label_id}" id="${data.label_id}">
+                                <label for="${data.label_id}">${data.label_name}</label>
+                            </div>
+                        `);
+                        labelCheckboxes.append(newCheckbox);
+
+                        // Clear the new label input field
+                        newLabelInput.val("");
+                    }
+                },
+                error: function (err) {
+                    console.error("Error adding label:", err);
+                },
+            });
+        }
+    });
+
+    /**
+     * remove file
+     */
+    // Add an event listener for the remove button
+    $(document).on("click", ".remove-file-btn", function () {
+        // Get the file ID and file path from data attributes
+        var fileId = $(this).data("file-id");
+
+        // Send an AJAX request to remove the file from the server
+        $.ajax({
+            url: "/remove-file", // Server-side route to handle file removal
+            type: "DELETE", // Use the DELETE HTTP method
+            data: {
+                file_id: fileId, // Include the file ID as data
+                _token: $('meta[name="csrf-token"]').attr("content"), // CSRF token for security
+            },
+            success: function (response) {
+                if (response.success) {
+                    // Remove the corresponding file row from the modal
+                    $(this).closest(".file-container").remove();
+                } else {
+                    // Display an error message
+                    alert("Failed to remove the file: " + response.error);
+                }
+            }.bind(this),
+            error: function () {
+                // Display an error message if an error occurs
+                alert("An error occurred while trying to remove the file.");
+            },
+        });
+    });
 });

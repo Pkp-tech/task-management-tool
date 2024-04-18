@@ -29,6 +29,60 @@
     </div>
 </div>
 
+<div class="py-12 overflow-x-auto">
+    <div class="flex space-x-4 max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <!-- To Do Column -->
+        <div class="bg-yellow-100 p-4 rounded-md min-w-[400px]">
+            <h2 class="font-semibold text-lg mb-4">To Do</h2>
+            <ul class="sortable" id="todo-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <li class="draggable bg-white rounded-md p-2 mb-4" draggable="true" ondragstart="drag(event)" id="task1">Task 1</li>
+                <li class="draggable bg-white rounded-md p-2 mb-4" draggable="true" ondragstart="drag(event)" id="task2">Task 2</li>
+            </ul>
+        </div>
+
+        <!-- In Progress Column -->
+        <div class="bg-purple-100 p-4 rounded-md min-w-[400px]">
+            <h2 class="font-semibold text-lg mb-4">In Progress</h2>
+            <ul class="sortable" id="in-progress-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <li class="draggable bg-white rounded-md p-2 mb-4" draggable="true" ondragstart="drag(event)" id="task3">Task 3</li>
+            </ul>
+        </div>
+
+        <!-- Completed Column -->
+        <div class="bg-green-100 p-4 rounded-md min-w-[400px]">
+            <h2 class="font-semibold text-lg mb-4">Completed</h2>
+            <ul class="sortable" id="completed-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Add tasks for Completed column here -->
+            </ul>
+        </div>
+        <div class="bg-yellow-100 p-4 rounded-md min-w-[400px]">
+            <h2 class="font-semibold text-lg mb-4">To Do</h2>
+            <ul class="sortable" id="todo-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <li class="draggable bg-white rounded-md p-2 mb-4" draggable="true" ondragstart="drag(event)" id="task1">Task 1</li>
+                <li class="draggable bg-white rounded-md p-2 mb-4" draggable="true" ondragstart="drag(event)" id="task2">Task 2</li>
+            </ul>
+        </div>
+
+        <!-- In Progress Column -->
+        <div class="bg-purple-100 p-4 rounded-md min-w-[400px]">
+            <h2 class="font-semibold text-lg mb-4">In Progress</h2>
+            <ul class="sortable" id="in-progress-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <li class="draggable bg-white rounded-md p-2 mb-4" draggable="true" ondragstart="drag(event)" id="task3">Task 3</li>
+            </ul>
+        </div>
+
+        <!-- Completed Column -->
+        <div class="bg-green-100 p-4 rounded-md min-w-[400px]">
+            <h2 class="font-semibold text-lg mb-4">Completed</h2>
+            <ul class="sortable" id="completed-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Add tasks for Completed column here -->
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
 <script>
     let draggedItem = null;
 
