@@ -6,7 +6,7 @@ $(document).ready(function () {
                 <div class="card bg-yellow-100 rounded-md p-4 mb-4 min-w-[400px]">
                 <button id="add-list-btn" class="add-list-btn text-yellow-700">+ Add another list</button>
                 <div class="flex justify-between items-center mb-4">
-                    <div id="list-input" class="hidden list-input">
+                    <div id="list-input" class="list-input" style="display: none;">
                         <input type="text" id="list-status-column" class="list-status-column" placeholder="Enter List Title">
                     </div>
                     <h2 class="list-title font-semibold text-lg" style="display: none;"></h2>
@@ -71,6 +71,21 @@ $(document).ready(function () {
                     addStatusColumn(statusColumn, card);
                 }
             }
+        }
+    });
+
+    // Add blur event listener to list status column input
+    $(document).on("blur", ".list-status-column", function () {
+        // Get the input element and the corresponding card
+        var listStatusColumnInput = $(this);
+        var card = listStatusColumnInput.closest(".card");
+
+        // Check if the input value is empty
+        if (listStatusColumnInput.val().trim() === "") {
+            // Hide the input and show the "+ Add List" button
+            card.find(".list-input").hide();
+            card.find(".add-list-btn").show();
+            // card.find(".list-title").show();
         }
     });
 
@@ -157,6 +172,15 @@ $(document).ready(function () {
                 var statusColumnId = card.data("status-column-id");
                 addTask(task, card, statusColumnId);
             }
+        }
+    });
+
+    // Task Input Field Blur Event
+    $(document).on("blur", ".task-status", function () {
+        // If the input is empty, hide it and show the "+ Add Task" button
+        if ($(this).val().trim() === "") {
+            var card = $(this).closest(".card");
+            $(this).closest(".task-input").hide();
         }
     });
 
@@ -313,6 +337,11 @@ $(document).ready(function () {
         if (action === "Edit Task") {
             var EditModal = $("#edit-task-modal");
 
+            // Error message div
+            const errorMessageDiv = EditModal.find(".edit-task-error-message");
+            errorMessageDiv.text("").addClass("hidden");
+            EditModal.find(".new-label-input").val("");
+
             // Populate the form in the modal with the retrieved task data
             EditModal.find("#task-id").val(response.task_id); // Hidden input field for task ID
             EditModal.find("#task-title").val(response.title);
@@ -449,6 +478,15 @@ $(document).ready(function () {
         // Get the new label name from the input field
         const newLabelName = newLabelInput.val().trim();
 
+        // Check if the input is empty
+        // if (!newLabelName) {
+        //     alert("Please enter a label name.");
+        //     return;
+        // }
+
+        // Error message div
+        const errorMessageDiv = form.find(".edit-task-error-message");
+
         if (newLabelName !== "") {
             // Send AJAX request to server to create a new label
             $.ajax({
@@ -459,22 +497,34 @@ $(document).ready(function () {
                     _token: $('meta[name="csrf-token"]').attr("content"), // CSRF token for security
                 },
                 success: function (data) {
+                    // Hide the error message div on success
+                    errorMessageDiv.addClass("hidden");
+
                     if (data.success) {
                         // Create a new checkbox for the new label and add it to the container
                         const newCheckbox = $(`
-                            <div class="mb-2">
+                            <div class="label flex items-center space-x-2 mb-2">
                                 <input type="checkbox" class="label-checkbox" name="label_ids[]" value="${data.label_id}" id="${data.label_id}">
                                 <label for="${data.label_id}">${data.label_name}</label>
+                                <i class="fas fa-trash text-red-500 remove-label-btn" data-label-id="${data.label_id}"></i>
                             </div>
                         `);
                         labelCheckboxes.append(newCheckbox);
 
                         // Clear the new label input field
                         newLabelInput.val("");
+                    } else {
+                        // Show the error message
+                        errorMessageDiv
+                            .text(data.message)
+                            .removeClass("hidden");
                     }
                 },
                 error: function (err) {
-                    console.error("Error adding label:", err);
+                    // Show the error message div with the error message
+                    errorMessageDiv
+                        .text("Error adding label: " + err.responseJSON.message)
+                        .removeClass("hidden");
                 },
             });
         }
@@ -508,6 +558,37 @@ $(document).ready(function () {
             error: function () {
                 // Display an error message if an error occurs
                 alert("An error occurred while trying to remove the file.");
+            },
+        });
+    });
+
+    /**
+     * remove label
+     */
+    $(document).on("click", ".remove-label-btn", function () {
+        // Get the label ID from the data attribute
+        const labelId = $(this).data("label-id");
+
+        var labelElement = $(this).closest(".label");
+
+        // Send an AJAX request to remove the label
+        $.ajax({
+            url: "/remove-label", // Server endpoint for removing a label
+            type: "DELETE",
+            data: {
+                id: labelId,
+                _token: $('meta[name="csrf-token"]').attr("content"), // CSRF token for security
+            },
+            success: function (response) {
+                if (response.success) {
+                    // Remove the label's list and button from the DOM
+                    labelElement.remove();
+                } else {
+                    console.error("Error removing label:", response.message);
+                }
+            },
+            error: function (err) {
+                console.error("Error removing label:", err);
             },
         });
     });

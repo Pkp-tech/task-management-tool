@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/remove-file', [TaskController::class, 'removeFile'])->name('remove-file');
 
     Route::post('/add-label', [LabelController::class, 'createLabel'])->name('label.add');
+    Route::delete('/remove-label', [LabelController::class, 'destroy'])->name('label.destroy');
 
 });
 

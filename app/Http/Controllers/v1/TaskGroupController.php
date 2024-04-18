@@ -35,12 +35,7 @@ class TaskGroupController extends Controller
     public function add(Request $request): RedirectResponse
     {
         try {
-            // dd('here');
-            // Validate the incoming request
-            // $request->validateWithBag('userDeletion', [
-            //     'password' => ['required', 'current_password'],
-            // ]);
-
+            
             $request->validateWithBag('taskGroupValidation', [
                 'task-group-name' => 'required|string|max:255|unique:task_groups,name,NULL,id,user_id,' . auth()->id(),
             ]);
@@ -56,7 +51,6 @@ class TaskGroupController extends Controller
             return Redirect::route('task-group')->with('status', 'Task group created successfully.');
         } catch (\Exception $e) {
             // Handle any exceptions
-            // dd('error-->' . $e);
             return Redirect::route('task-group')->with('error', 'Failed to create task group: ' . $e->getMessage());
         }
     }

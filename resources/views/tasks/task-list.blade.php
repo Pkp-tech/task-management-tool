@@ -6,7 +6,7 @@
             <!-- List Title -->
             <div class="flex justify-between items-center mb-4">
                 <div id="list-input" class="hidden list-input">
-                    <input type="text" id="list-status-column" class="list-status-column" placeholder="Enter List Title">
+                    <input type="text" class="list-status-column" placeholder="Enter List Title">
                 </div>
                 <h2 class="list-title font-semibold text-lg">{{ $statusColumn->name }}</h2>
                 <!-- More Options Button -->
@@ -81,8 +81,8 @@
 
             <!-- List Status Column Input -->
             <div class="flex justify-between items-center mb-4">
-                <div id="list-input" class="hidden list-input">
-                    <input type="text" id="list-status-column" class="list-status-column" placeholder="Enter List Title">
+                <div id="list-input" class="list-input" style="display: none;">
+                    <input type="text" class="list-status-column" placeholder="Enter List Title">
                 </div>
                 <h2 class="list-title font-semibold text-lg" style="display: none;"></h2>
                 <!-- More Options Button -->

@@ -1,12 +1,3 @@
-<!-- Modal for edit/delete -->
-<!-- <div id="task-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white p-4 rounded-md">
-        <h2 id="modal-title" class="text-xl">Edit/Delete Task</h2>
-        <div id="modal-content"></div>
-        <button id="modal-close" class="mt-4">Close</button>
-    </div>
-</div> -->
-
 <!-- Modal -->
 <div id="delete-task-modal" class="task-modal fixed z-50 inset-0 bg-gray-900 bg-opacity-75 hidden">
     <div class="flex justify-center items-center h-full">

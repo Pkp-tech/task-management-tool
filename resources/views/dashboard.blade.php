@@ -5,20 +5,25 @@
         </h2>
     </x-slot>
 
+
     <!-- Check for status and error messages -->
     @if (session('status'))
     <!-- Display the success message -->
-    <div class="alert alert-success">
-        {{ session('status') }}
+    <div class="py-2" x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)">
+        <div class="flex items-center justify-center">
+            <p class="text-sm text-gray-600 dark:text-gray-400 ml-4">{{ session('status') }}</p>
+        </div>
     </div>
     @endif
 
     @if (session('error'))
-    <!-- Display the error message -->
-    <div class="alert alert-danger">
-        {{ session('error') }}
+    <div class="py-2" x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)">
+        <div class="flex items-center justify-center">
+            <p x-data="{ show: true }" class="text-sm text-gray-600 dark:text-gray-400 ml-4">{{ session('status')}}</p>
+        </div>
     </div>
     @endif
+
 
     <div class="py-12" id="dashboard-message">
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
@@ -40,11 +45,6 @@
                         @endif
                     </div>
                     <div>
-                        <!-- @if (Route::has('task-group'))
-                        <a class="underline text-md text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 mx-4" href="{{ route('task-group') }}">
-                            {{ __('Add new task gorup?') }}
-                        </a>
-                        @endif -->
                         <!-- Button to add task group -->
                         <a href="{{ route('task-group.add') }}" class="inline-block px-4 py-2 bg-green-300 text-white rounded-lg hover:bg-green-400 focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                             Add New Task Group
