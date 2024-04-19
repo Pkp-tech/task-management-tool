@@ -48,10 +48,10 @@ class TaskGroupController extends Controller
             $taskGroup->save();
 
             // Redirect the user back to the previous page
-            return Redirect::route('task-group')->with('status', 'Task group created successfully.');
+            return Redirect::route('task-group')->with('task-group-status', 'Task group created successfully.');
         } catch (\Exception $e) {
             // Handle any exceptions
-            return Redirect::route('task-group')->with('error', 'Failed to create task group: ' . $e->getMessage());
+            return Redirect::route('task-group')->with('task-group-error', 'Failed to create task group: ' . $e->getMessage());
         }
     }
 
@@ -72,9 +72,9 @@ class TaskGroupController extends Controller
                 'name' => $request->input('task-group-name'),
             ]);
 
-            return Redirect::route('task-group')->with('success', 'Task group updated successfully.');
+            return Redirect::route('task-group')->with('task-group-status', 'Task group updated successfully.');
         } catch (\Exception $e) {
-            return Redirect::back()->with('error', 'Failed to update task group.')->withErrors([$e->getMessage()]);
+            return Redirect::back()->with('task-group-error', 'Failed to update task group.')->withErrors([$e->getMessage()]);
         }
     }
 
@@ -99,9 +99,9 @@ class TaskGroupController extends Controller
                 session()->forget('selected_task_group_id');
             }
 
-            return Redirect::route('task-group')->with('status', 'Task group deleted successfully.');
+            return Redirect::route('task-group')->with('task-group-status', 'Task group deleted successfully.');
         } catch (\Exception $e) {
-            return Redirect::back()->with('error', 'Failed to delete task group.')->withErrors([$e->getMessage()]);
+            return Redirect::back()->with('task-group-delete-error', 'Failed to delete task group.')->withErrors([$e->getMessage()]);
         }
     }
 

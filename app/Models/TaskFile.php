@@ -24,6 +24,7 @@ class TaskFile extends Model
     protected $fillable = [
         'task_id', // Associated task's ID
         'file_path', // File path
+        'file_name',
     ];
 
     /**

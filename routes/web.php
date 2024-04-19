@@ -8,13 +8,6 @@ use App\Http\Controllers\v1\TaskGroupController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
-// Route::get('/clear-session', function () {
-//     // Flush the session data
-//     Session::flush();
-
-//     // Redirect to a login page or any other page as needed
-//     return redirect('/login');
-// });
 
 Route::get('/', function () {
     return view('auth.login');

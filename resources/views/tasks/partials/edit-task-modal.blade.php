@@ -36,10 +36,24 @@
                     <input type="hidden" id="task-id" name="task_id" value="">
                 </div>
 
+                <!-- File Upload Section -->
+                <div class="bg-purple-100 p-4 rounded-md mb-4">
+                    <h3 class="text-sm font-semibold mb-2">Files:</h3>
+                    <div class="flex items-center space-x-4">
+                        <label for="task-files" class="text-sm font-semibold">Upload Files:</label>
+                        <input type="file" id="task-files" name="task_files[]" class="border rounded flex-1 p-2" multiple>
+                    </div>
+
+                    <!-- Display the uploaded files -->
+                    <div class="file-list mt-4 p-2 bg-gray-200 rounded overflow-y-auto max-h-40">
+                        <!-- Placeholder to display the uploaded files -->
+                    </div>
+                </div>
+
                 <!-- Labels Section -->
                 <div class="bg-yellow-100 p-4 rounded-md mb-4">
                     <h3 class="text-sm font-semibold mb-2">Labels:</h3>
-                    <div class="label-checkboxes grid grid-cols-3 gap-4">
+                    <div class="label-checkboxes grid grid-cols-3 gap-4 overflow-y-auto max-h-20">
                         <!-- Loop through labels and display as checkboxes -->
                         @foreach ($labels as $label)
                         <div class="label flex items-center space-x-2 mb-2">
@@ -55,20 +69,6 @@
                     <div class="mt-4 flex items-center space-x-4">
                         <input type="text" id="new-label-input" class="new-label-input border rounded flex-1 p-2" placeholder="Enter new label">
                         <button type="button" class="add-new-label-btn bg-green-500 text-white rounded px-4 py-2">Add Label</button>
-                    </div>
-                </div>
-
-                <!-- File Upload Section -->
-                <div class="bg-purple-100 p-4 rounded-md mb-4">
-                    <h3 class="text-sm font-semibold mb-2">Files:</h3>
-                    <div class="flex items-center space-x-4">
-                        <label for="task-files" class="text-sm font-semibold">Upload Files:</label>
-                        <input type="file" id="task-files" name="task_files[]" class="border rounded flex-1 p-2" multiple>
-                    </div>
-
-                    <!-- Display the uploaded files -->
-                    <div class="file-list mt-4 p-2 bg-gray-200 rounded overflow-y-auto max-h-40">
-                        <!-- Placeholder to display the uploaded files -->
                     </div>
                 </div>
 

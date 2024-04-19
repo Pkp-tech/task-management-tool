@@ -56,6 +56,8 @@
     </div>
 
     <!-- Include task list  -->
+    @if (!empty($selectedTaskGroupId))
     @include('tasks.task-list', ['labels' => $labels])
+    @endif
 
 </x-app-layout>

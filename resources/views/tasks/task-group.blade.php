@@ -7,10 +7,13 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex justify-end">
-            @if (session('status') === 'Task group created successfully.')
-            <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400 ml-4">{{ __('Task group created successfully.') }}</p>
-            @else (session('error'))
+            @if (session('task-group-status'))
+            <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400 ml-4">{{ session('task-group-status') }}</p>
+            @elseif (session('task-group-error'))
             <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400 ml-4">{{ __('Task group already exist or something went wrong.') }}</p>
+            @elseif(session('task-group-delete-error'))
+            <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400 ml-4">{{ session('task-group-delete-error') }}</p>
+           
             @endif
         
             <!-- Button to add task group -->

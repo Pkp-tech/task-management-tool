@@ -3,28 +3,30 @@ $(document).ready(function () {
     function addColumn() {
         // var newColumnId = generateColumnId();
         var newColumn = `
-                <div class="card bg-yellow-100 rounded-md p-4 mb-4 min-w-[400px]">
-                <button id="add-list-btn" class="add-list-btn text-yellow-700">+ Add another list</button>
-                <div class="flex justify-between items-center mb-4">
-                    <div id="list-input" class="list-input" style="display: none;">
-                        <input type="text" id="list-status-column" class="list-status-column" placeholder="Enter List Title">
-                    </div>
-                    <h2 class="list-title font-semibold text-lg" style="display: none;"></h2>
-                    <div class="relative">
-                        <button class="more-options-btn hidden">⋮</button>
-                        <div class="more-options-menu hidden absolute right-0 mt-2 bg-white shadow-lg rounded z-100 p-2">
-                            <ul>
-                                <li><button class="edit-status-column-btn" data-status-column-id="">Edit</button></li>
-                                <li><button class="delete-status-column-btn" data-status-column-id="" data-status-column-title="">Delete</button></li>
-                            </ul>
+                <div class="card min-w-[400px] max-h-[400px] overflow-y-auto">
+                    <div class="bg-yellow-100 p-4 rounded-md mb-4">
+                        <button id="add-list-btn" class="add-list-btn text-yellow-700">+ Add another list</button>
+                        <div class="flex justify-between items-center mb-4">
+                            <div id="list-input" class="list-input" style="display: none;">
+                                <input type="text" id="list-status-column" class="list-status-column" placeholder="Enter List Title">
+                            </div>
+                            <h2 class="list-title font-semibold text-lg" style="display: none;"></h2>
+                            <div class="relative">
+                                <button class="more-options-btn hidden">⋮</button>
+                                <div class="more-options-menu hidden absolute right-0 mt-2 bg-white shadow-lg rounded z-100 p-2">
+                                    <ul>
+                                        <li><button class="edit-status-column-btn" data-status-column-id="">Edit</button></li>
+                                        <li><button class="delete-status-column-btn" data-status-column-id="" data-status-column-title="">Delete</button></li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
+                        <ul class="task-list"></ul>
+                        <div class="task-input hidden">
+                            <input type="text" class="task-status" placeholder="Enter Task">
+                        </div>
+                        <button class="add-task-btn hidden text-yellow-700">+ Add Task</button>
                     </div>
-                </div>
-                <ul class="task-list"></ul>
-                <div class="task-input hidden">
-                    <input type="text" class="task-status" placeholder="Enter Task">
-                </div>
-                <button class="add-task-btn hidden text-yellow-700">+ Add Task</button>
                 </div>
             `;
         $(".card").last().after(newColumn);
@@ -352,17 +354,7 @@ $(document).ready(function () {
             // Clear previous file list
             taskFilesDiv.empty();
 
-            // Iterate over the files in the response
-            // response.files.forEach(function (file) {
-            //     // Create a file link and append to taskFilesDiv
-            //     var fileLink = $("<a>")
-            //         .attr("href", response.storage_url + "/" + file.file_path)
-            //         .attr("target", "_blank")
-            //         .text(file.file_path);
-            //     taskFilesDiv.append(fileLink);
-            //     taskFilesDiv.append("<br>"); // Add a line break for each file
-            // });
-
+            // Iterate over the files in the response       
             response.files.forEach(function (file, index) {
                 // Create a container div for each file
                 var fileContainer = $("<div>").addClass(
@@ -378,7 +370,7 @@ $(document).ready(function () {
                 var fileLink = $("<a>")
                     .attr("href", response.storage_url + "/" + file.file_path)
                     .attr("target", "_blank")
-                    .text(file.file_path);
+                    .text(file.file_name);
 
                 // Create a remove button for each file
                 var removeButton = $("<button>")

@@ -134,11 +134,13 @@ class TaskController extends Controller
                 foreach ($request->file('task_files') as $file) {
                     // Store the file and get the path
                     $path = $file->store('task_files', 'public');
+                    $fileName = $file->getClientOriginalName();
 
                     // Create a new TaskFile record
                     TaskFile::create([
                         'task_id' => $task->id,
                         'file_path' => $path,
+                        'file_name' => $fileName,
                     ]);
                 }
             }
