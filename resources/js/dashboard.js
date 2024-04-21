@@ -354,7 +354,7 @@ $(document).ready(function () {
             // Clear previous file list
             taskFilesDiv.empty();
 
-            // Iterate over the files in the response       
+            // Iterate over the files in the response
             response.files.forEach(function (file, index) {
                 // Create a container div for each file
                 var fileContainer = $("<div>").addClass(
@@ -470,14 +470,14 @@ $(document).ready(function () {
         // Get the new label name from the input field
         const newLabelName = newLabelInput.val().trim();
 
-        // Check if the input is empty
-        // if (!newLabelName) {
-        //     alert("Please enter a label name.");
-        //     return;
-        // }
-
         // Error message div
         const errorMessageDiv = form.find(".edit-task-error-message");
+
+        //Check if the input is empty
+        if (!newLabelName) {
+            errorMessageDiv.text("Please enter a label name.").removeClass("hidden");
+            return;
+        }
 
         if (newLabelName !== "") {
             // Send AJAX request to server to create a new label
