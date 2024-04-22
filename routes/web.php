@@ -8,6 +8,7 @@ use App\Http\Controllers\v1\TaskGroupController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
+require __DIR__ . '/auth.php';
 
 Route::get('/', function () {
     return view('auth.login');
@@ -39,10 +40,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/add-label', [LabelController::class, 'createLabel'])->name('label.add');
     Route::delete('/remove-label', [LabelController::class, 'destroy'])->name('label.destroy');
-
 });
 
 Route::post('/update-task-group-session', [TaskGroupController::class, 'updateTaskGroupSession']);
-
-
-require __DIR__ . '/auth.php';
