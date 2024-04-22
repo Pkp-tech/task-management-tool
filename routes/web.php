@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/task-group', [TaskGroupController::class, 'add'])->name('task-group.add');
     Route::patch('/task-group/{id}', [TaskGroupController::class, 'update'])->name('task-group.update');
     Route::delete('/task-group/{id}', [TaskGroupController::class, 'destroy'])->name('task-group.destroy');
+    Route::post('/add-tasks', [TaskGroupController::class, 'addTasks'])->name('add-tasks');
 
     Route::post('/add-status-column', [StatusColumnController::class, 'add'])->name('status-column.add');
     Route::patch('/update-status-column', [StatusColumnController::class, 'update'])->name('status-column.update');

@@ -14,6 +14,9 @@ class TaskGroupController extends Controller
 {
     /**
      * Display the task group.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\View\View;
      */
     public function edit(Request $request): View
     {
@@ -35,7 +38,7 @@ class TaskGroupController extends Controller
     public function add(Request $request): RedirectResponse
     {
         try {
-            
+
             $request->validateWithBag('taskGroupValidation', [
                 'task-group-name' => 'required|string|max:255|unique:task_groups,name,NULL,id,user_id,' . auth()->id(),
             ]);
@@ -57,6 +60,9 @@ class TaskGroupController extends Controller
 
     /**
      * Update task group.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id): RedirectResponse
     {
@@ -80,6 +86,9 @@ class TaskGroupController extends Controller
 
     /**
      * Delete a task group.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id): RedirectResponse
     {
@@ -126,5 +135,22 @@ class TaskGroupController extends Controller
             // Return an error response if an exception occurs
             return response()->json(['error' => 'Failed to update session variable: ' . $e->getMessage()], 500);
         }
+    }
+
+    /** Redirect to dashboard from task group list on add task
+     * 
+     *  @param  \Illuminate\Http\Request  $request
+     *  @return \Illuminate\Http\RedirectResponse
+     */
+    public function addTasks(Request $request)
+    {
+        // Retrieve the selected task group ID from the request
+        $selectedTaskGroupId = $request->input('selected_task_group_id');
+
+        // Update the session variable with the selected task group ID
+        session()->put('selected_task_group_id', $selectedTaskGroupId);
+
+        // Redirect to the dashboard page
+        return redirect()->route('dashboard');
     }
 }

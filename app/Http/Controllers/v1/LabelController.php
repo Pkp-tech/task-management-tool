@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class LabelController extends Controller
 {
+    /**
+     * Create new label
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function createLabel(Request $request)
     {
         // Validate the request input
@@ -49,7 +55,12 @@ class LabelController extends Controller
         }
     }
 
-    // method to remove a label
+    /**
+     * Method to remove a labelmethod to remove a label
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy(Request $request)
     {
         // Get the label ID from the request

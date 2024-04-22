@@ -1,8 +1,9 @@
 $(document).ready(function () {
-    // Function to add a new column
+    /**
+     *  Function to add a new column
+     */
     function addColumn() {
-        // var newColumnId = generateColumnId();
-        var newColumn = `
+        let newColumn = `
                 <div class="card min-w-[400px] max-h-[400px] overflow-y-auto">
                     <div class="bg-yellow-100 p-4 rounded-md mb-4">
                         <button id="add-list-btn" class="add-list-btn text-yellow-700">+ Add another list</button>
@@ -32,21 +33,25 @@ $(document).ready(function () {
         $(".card").last().after(newColumn);
     }
 
-    // Add List Button Click Event
+    /**
+     *  Add List Button Click Event
+     */
     $(document).on("click", ".add-list-btn", function () {
         $(this).hide();
         $(this).closest(".card").find(".list-input").show();
         $(this).closest(".card").find(".list-status-column").focus();
     });
 
-    // Add click event listener to the edit button in the more-options-menu
+    /**
+     *  Add click event listener to the edit button in the more-options-menu
+     */
     $(document).on("click", ".edit-status-column-btn", function () {
         // Retrieve the card and the current statusColumn details
-        var card = $(this).closest(".card");
-        var listTitle = card.find(".list-title");
-        var listStatusColumnInput = card.find(".list-input");
-        var listStatusColumn = card.find(".list-status-column");
-        var currentStatusColumn = listTitle.text();
+        let card = $(this).closest(".card");
+        let listTitle = card.find(".list-title");
+        let listStatusColumnInput = card.find(".list-input");
+        let listStatusColumn = card.find(".list-status-column");
+        let currentStatusColumn = listTitle.text();
 
         // Hide the list title and show the input field with the current statusColumn
         listTitle.hide();
@@ -57,12 +62,14 @@ $(document).ready(function () {
         $(this).closest(".more-options-menu").addClass("hidden");
     });
 
-    // Add List StatusColumn Input Keyup Event
+    /**
+     *  Add List StatusColumn Input Keyup Event
+     */
     $(document).on("keyup", ".list-status-column", function (event) {
         if (event.keyCode === 13) {
-            var statusColumn = $(this).val().trim();
-            var card = $(this).closest(".card");
-            var statusColumnId = card.data("status-column-id");
+            let statusColumn = $(this).val().trim();
+            let card = $(this).closest(".card");
+            let statusColumnId = card.data("status-column-id");
             if (statusColumn !== "") {
                 // Check if statusColumnId is defined
                 if (statusColumnId !== undefined && statusColumnId !== null) {
@@ -76,22 +83,25 @@ $(document).ready(function () {
         }
     });
 
-    // Add blur event listener to list status column input
+    /**
+     *  Add blur event listener to list status column input
+     */
     $(document).on("blur", ".list-status-column", function () {
         // Get the input element and the corresponding card
-        var listStatusColumnInput = $(this);
-        var card = listStatusColumnInput.closest(".card");
+        let listStatusColumnInput = $(this);
+        let card = listStatusColumnInput.closest(".card");
 
         // Check if the input value is empty
         if (listStatusColumnInput.val().trim() === "") {
             // Hide the input and show the "+ Add List" button
             card.find(".list-input").hide();
             card.find(".add-list-btn").show();
-            // card.find(".list-title").show();
         }
     });
 
-    // Function to add statusColumn through AJAX
+    /**
+     *  Function to add statusColumn through AJAX
+     */
     function addStatusColumn(statusColumn, card) {
         $.ajax({
             url: "/add-status-column",
@@ -134,7 +144,9 @@ $(document).ready(function () {
         });
     }
 
-    // Function to update the statusColumn through AJAX
+    /**
+     *  Function to update the statusColumn through AJAX
+     */
     function updateStatusColumn(statusColumnId, newStatusColumn, card) {
         $.ajax({
             url: "/update-status-column",
@@ -158,35 +170,43 @@ $(document).ready(function () {
         });
     }
 
-    // Task Button Click Event
+    /**
+     *  Task Button Click Event
+     */
     $(document).on("click", ".add-task-btn", function () {
-        var card = $(this).closest(".card");
+        let card = $(this).closest(".card");
         card.find(".task-input").show();
         card.find(".task-status").focus();
     });
 
-    // Task Input Field Keyup Event
+    /**
+     *  Task Input Field Keyup Event
+     */
     $(document).on("keyup", ".task-status", function (event) {
         if (event.keyCode === 13) {
-            var task = $(this).val().trim();
+            let task = $(this).val().trim();
             if (task !== "") {
-                var card = $(this).closest(".card");
-                var statusColumnId = card.data("status-column-id");
+                let card = $(this).closest(".card");
+                let statusColumnId = card.data("status-column-id");
                 addTask(task, card, statusColumnId);
             }
         }
     });
 
-    // Task Input Field Blur Event
+    /**
+     *  Task Input Field Blur Event
+     */
     $(document).on("blur", ".task-status", function () {
         // If the input is empty, hide it and show the "+ Add Task" button
         if ($(this).val().trim() === "") {
-            var card = $(this).closest(".card");
+            let card = $(this).closest(".card");
             $(this).closest(".task-input").hide();
         }
     });
 
-    // Function to add task through AJAX
+    /**
+     *  Function to add task through AJAX
+     */
     function addTask(task, card, statusColumnId) {
         $.ajax({
             url: "/add-task",
@@ -200,7 +220,7 @@ $(document).ready(function () {
                 // Task added successfully
                 console.log(response.message);
                 // Update UI to show the new task
-                var taskItem = $(
+                let taskItem = $(
                     '<li class="draggable bg-white rounded-md p-2 mb-4 flex justify-between items-center" data-task-id="' +
                         response.taskId +
                         '" draggable="true" ondragstart="drag(event)">' +
@@ -233,9 +253,11 @@ $(document).ready(function () {
         });
     }
 
-    //Set task group
+    /**
+     *  On change event listener to change selected task group
+     */
     $("#task-group-dropdown").change(function () {
-        var selectedTaskGroupId = $(this).val();
+        let selectedTaskGroupId = $(this).val();
 
         // Make an AJAX request to update the session variable
         $.ajax({
@@ -247,7 +269,6 @@ $(document).ready(function () {
             },
             success: function (response) {
                 // Session variable updated successfully
-                console.log(response.message);
                 // Reload the page
                 window.location.reload();
             },
@@ -258,19 +279,23 @@ $(document).ready(function () {
         });
     });
 
-    // Add click event listener to more options buttons
+    /**
+     *  Click event listener to show more options
+     */
     $(document).on("click", ".more-options-btn", function () {
         // Hide all other more-options-menu elements before toggling the clicked menu
         $(".more-options-menu").addClass("hidden");
 
         // Get the corresponding more-options-menu for the clicked button
-        var menu = $(this).siblings(".more-options-menu");
+        let menu = $(this).siblings(".more-options-menu");
 
         // Toggle the visibility of the clicked menu
         menu.toggleClass("hidden");
     });
 
-    // Add click event listener to hide the menu when clicking outside of it
+    /**
+     *  Add click event listener to hide the menu when clicking outside of it
+     */
     $(document).on("click", function (event) {
         // Check if the clicked element is not a more-options-btn or inside the more-options-menu
         if (
@@ -282,10 +307,12 @@ $(document).ready(function () {
         }
     });
 
-    // Add click event listener to the edit button
+    /**
+     *  Click event listener to edit the task
+     */
     $(document).on("click", ".edit-task-btn", function () {
         // Retrieve task ID, title, description, and statusColumn ID from data attributes
-        var taskId = $(this).data("task-id");
+        let taskId = $(this).data("task-id");
 
         // Close the more-options dropdown
         $(this).closest(".more-options-menu").addClass("hidden");
@@ -305,11 +332,13 @@ $(document).ready(function () {
         });
     });
 
-    // Add click event listener to the delete button
+    /**
+     *  Click event listener to delete the task
+     */
     $(document).on("click", ".delete-task-btn", function () {
         // Retrieve task ID, title, description, and statusColumn ID from data attributes
-        var taskId = $(this).data("task-id");
-        // var taskTitle = $(this).data("task-title");
+        let taskId = $(this).data("task-id");
+        // let taskTitle = $(this).data("task-title");
 
         // Populate the modal input fields with the task data
         $("#task-id").val(taskId);
@@ -333,11 +362,13 @@ $(document).ready(function () {
         });
     });
 
-    // Function to open the modal
+    /**
+     *  Click event listener to open the modal
+     */
     function openModal(action, taskId, response) {
         // Set the modal content based on action
         if (action === "Edit Task") {
-            var EditModal = $("#edit-task-modal");
+            let EditModal = $("#edit-task-modal");
 
             // Error message div
             const errorMessageDiv = EditModal.find(".edit-task-error-message");
@@ -349,7 +380,7 @@ $(document).ready(function () {
             EditModal.find("#task-title").val(response.title);
             EditModal.find("#task-description").val(response.description);
             // response contains the task files
-            var taskFilesDiv = EditModal.find(".file-list"); // Select the div with class 'task-file'
+            let taskFilesDiv = EditModal.find(".file-list"); // Select the div with class 'task-file'
 
             // Clear previous file list
             taskFilesDiv.empty();
@@ -357,23 +388,23 @@ $(document).ready(function () {
             // Iterate over the files in the response
             response.files.forEach(function (file, index) {
                 // Create a container div for each file
-                var fileContainer = $("<div>").addClass(
+                let fileContainer = $("<div>").addClass(
                     "file-container flex justify-between items-center mb-2"
                 );
 
                 // Create a serial number element
-                var serialNumber = $("<span>")
+                let serialNumber = $("<span>")
                     .addClass("file-serial-number mr-2")
                     .text(index + 1 + "."); // Serial numbers start from 1
 
                 // Create a file link
-                var fileLink = $("<a>")
+                let fileLink = $("<a>")
                     .attr("href", response.storage_url + "/" + file.file_path)
                     .attr("target", "_blank")
                     .text(file.file_name);
 
                 // Create a remove button for each file
-                var removeButton = $("<button>")
+                let removeButton = $("<button>")
                     .addClass("remove-file-btn text-red-500 ml-2 font-bold")
                     .attr("type", "button")
                     .attr("data-file-id", file.id) // Attach file ID for removal
@@ -415,7 +446,7 @@ $(document).ready(function () {
             // Show the modal
             EditModal.removeClass("hidden");
         } else if (action === "Delete Task") {
-            var DeleteModal = $("#delete-task-modal");
+            let DeleteModal = $("#delete-task-modal");
 
             // Populate the form in the modal with the retrieved task data
             DeleteModal.find("#task-id").val(response.task_id); // Hidden input field for task ID
@@ -426,25 +457,26 @@ $(document).ready(function () {
         }
     }
 
-    // Close the modal when clicking the close button
+    /**
+     *  Click event listener to close the modal
+     */
     $(".modal-close").click(function () {
         // Hide the modal
         $(".task-modal").addClass("hidden");
     });
 
     /**
-     * StatusColumn delete
+     *  Click event listener to delete the status column
      */
-    // Add click event listener to the delete button
     $(document).on("click", ".delete-status-column-btn", function () {
-        var statusColumnId = $(this).data("status-column-id");
-        var statusColumnTitle = $(this).data("status-column-title");
+        let statusColumnId = $(this).data("status-column-id");
+        let statusColumnTitle = $(this).data("status-column-title");
 
         // Close the more-options dropdown
         $(this).closest(".more-options-menu").addClass("hidden");
 
         // Open the modal for deleting the task
-        var DeleteModal = $("#delete-status-column-modal");
+        let DeleteModal = $("#delete-status-column-modal");
 
         // Populate the form in the modal with the retrieved task data
         DeleteModal.find("#status-column-id").val(statusColumnId); // Hidden input field for task ID
@@ -455,7 +487,7 @@ $(document).ready(function () {
     });
 
     /**
-     * Label tasks
+     *  Click event listener to add the label
      */
     $(document).on("click", ".add-new-label-btn", function () {
         // Find the form that the clicked button belongs to
@@ -475,7 +507,9 @@ $(document).ready(function () {
 
         //Check if the input is empty
         if (!newLabelName) {
-            errorMessageDiv.text("Please enter a label name.").removeClass("hidden");
+            errorMessageDiv
+                .text("Please enter a label name.")
+                .removeClass("hidden");
             return;
         }
 
@@ -523,12 +557,11 @@ $(document).ready(function () {
     });
 
     /**
-     * remove file
+     *  Click event listener to remove the file
      */
-    // Add an event listener for the remove button
     $(document).on("click", ".remove-file-btn", function () {
         // Get the file ID and file path from data attributes
-        var fileId = $(this).data("file-id");
+        let fileId = $(this).data("file-id");
 
         // Send an AJAX request to remove the file from the server
         $.ajax({
@@ -555,13 +588,13 @@ $(document).ready(function () {
     });
 
     /**
-     * remove label
+     *  Click event listener to delete the label
      */
     $(document).on("click", ".remove-label-btn", function () {
         // Get the label ID from the data attribute
         const labelId = $(this).data("label-id");
 
-        var labelElement = $(this).closest(".label");
+        let labelElement = $(this).closest(".label");
 
         // Send an AJAX request to remove the label
         $.ajax({

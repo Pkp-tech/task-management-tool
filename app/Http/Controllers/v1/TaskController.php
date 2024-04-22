@@ -19,6 +19,9 @@ class TaskController extends Controller
 {
     /**
      * Display the task.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\View\View;
      */
     public function index(Request $request): View
     {
@@ -62,6 +65,9 @@ class TaskController extends Controller
 
     /**
      * Add the task.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function add(Request $request)
     {
@@ -96,8 +102,11 @@ class TaskController extends Controller
 
     /**
      * Update task.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         try {
             // Retrieve the task ID from the request
@@ -116,15 +125,11 @@ class TaskController extends Controller
                 'task_title' => 'required|string|max:255',
                 'task_desc' => 'sometimes|string',
                 'task_files.*' => 'sometimes|file|mimes:jpg,jpeg,png,pdf,doc,docx,txt|max:2048',
-                // 'task_group_id' => 'required|exists:task_groups,id',
-                // 'status_column_id' => 'required|exists:statusColumns,id',
             ]);
 
             // Update task attributes
             $task->title = $request->input('task_title');
             $task->description = $request->input('task_description');
-            // $task->task_group_id = $request->input('task_group_id');
-            // $task->status_column_id = $request->input('status_column_id');
 
             // Save the updated task
             $task->save();
@@ -155,15 +160,17 @@ class TaskController extends Controller
             return Redirect::route('dashboard')->with('status', 'Task updated successfully');
         } catch (\Exception $e) {
             // Handle any exceptions
-            // dd('error-->' . $e);
             return Redirect::route('dashboard')->with('error', 'Failed to update task: ' . $e->getMessage());
         }
     }
 
     /**
      * Delete a task.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request): RedirectResponse
     {
         try {
             // Retrieve the task ID from the request
@@ -189,7 +196,12 @@ class TaskController extends Controller
         }
     }
 
-    // Method to handle AJAX request for fetching task data by ID
+    /**
+     * Method to handle AJAX request for fetching task data by ID
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getTaskData($id)
     {
         try {
@@ -218,7 +230,12 @@ class TaskController extends Controller
         }
     }
 
-    // Method to handle the update status request
+    /**
+     * Method to handle the update status request
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateStatus(Request $request, $taskId)
     {
         try {
@@ -254,6 +271,9 @@ class TaskController extends Controller
 
     /**
      * Delete a file.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function removeFile(Request $request)
     {

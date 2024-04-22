@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\StatusColumn;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class StatusColumnController extends Controller
@@ -46,7 +47,12 @@ class StatusColumnController extends Controller
         }
     }
 
-    // Update a status column based on the provided status column ID from the request
+    /**
+     * Update a status column based on the provided status column ID from the request
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Request $request)
     {
         try {
@@ -81,8 +87,13 @@ class StatusColumnController extends Controller
         }
     }
 
-    // Delete a status column based on the provided status column ID from the request
-    public function destroy(Request $request)
+    /**
+     * Delete a status column based on the provided status column ID from the request
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(Request $request): RedirectResponse
     {
         try {
             // Retrieve the status column ID from the request

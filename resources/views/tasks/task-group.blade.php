@@ -13,9 +13,9 @@
             <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400 ml-4">{{ __('Task group already exist or something went wrong.') }}</p>
             @elseif(session('task-group-delete-error'))
             <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400 ml-4">{{ session('task-group-delete-error') }}</p>
-           
+
             @endif
-        
+
             <!-- Button to add task group -->
             @include('tasks.partials.add-task-group-form')
         </div>
@@ -59,13 +59,16 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center space-x-4">
+                                    <!-- Add Task Button -->
+                                    <form method="POST" action="{{ route('add-tasks') }}" class="inline">
+                                        @csrf
+                                        <input type="hidden" name="selected_task_group_id" value="{{ $taskGroup->id }}">
+                                        <x-primary-button type="submit">{{ __('Add Task') }}</x-primary-button>
+                                    </form>
                                     <!-- Update Button -->
-                                    <!-- <button type="button" class="text-indigo-600 hover:text-indigo-900" onclick="updateTaskGroup()">Update</button> -->
                                     @include('tasks.partials.update-task-group-form', ['taskGroup' => $taskGroup])
                                     <!-- Delete Button -->
-                                    <!-- <button type="button" class="text-red-600 hover:text-red-900" onclick="deleteTaskGroup()">Delete</button> -->
                                     @include('tasks.partials.delete-task-group-form', ['taskGroup' => $taskGroup])
-
                                 </div>
                             </td>
                         </tr>
